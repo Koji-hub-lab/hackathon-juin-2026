@@ -1,8 +1,16 @@
-"""Application FastAPI — Supply Chain Radar (async, PostgreSQL + Redis).
+"""Application FastAPI — Supply Chain Radar.
 
-Configure CORS (frontend port 3000), initialise la base (migration + seed) au
-démarrage, lance le scheduler d'alertes Redis et expose tous les routeurs sous
-le préfixe /api, plus l'endpoint WebSocket natif /ws.
+Point d'entrée de l'API :
+  - Initialisation de l'app FastAPI.
+  - CORS autorisé pour le frontend Next.js (ports 3000 et 3005).
+  - Cycle de vie (lifespan) : initialisation de la base SQLite/SQLAlchemy
+    (création des tables + seed des données) au démarrage, puis libération
+    propre des ressources à l'arrêt.
+  - Inclusion de tous les routeurs existants sous le préfixe /api.
+  - Endpoint WebSocket /ws et scheduler Redis activés uniquement si ENABLE_REDIS.
+
+Lancement :
+    uvicorn app.main:app --reload --port 8080
 """
 
 from contextlib import asynccontextmanager
@@ -28,12 +36,19 @@ from app.services.scheduler import start_scheduler
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup : migration + seed.
+    """Cycle de vie de l'application.
+
+    Startup : crée les tables SQLAlchemy et injecte les données initiales
+    (migration + seed via la base SQLite/PostgreSQL configurée).
+    Shutdown : arrête le scheduler, ferme Redis et libère le moteur SQLAlchemy.
+    """
+    # --- Startup ---
     await init_db()
-    # Tâche d'alertes Redis (désactivable pour tester sans Docker).
     task = start_scheduler() if settings.ENABLE_REDIS else None
+
     yield
-    # Shutdown : arrêt propre des ressources.
+
+    # --- Shutdown ---
     if task is not None:
         task.cancel()
     if settings.ENABLE_REDIS:
@@ -41,8 +56,14 @@ async def lifespan(app: FastAPI):
     await engine.dispose()
 
 
-app = FastAPI(title="Supply Chain Radar API", version="2.0", lifespan=lifespan)
+# Initialisation de l'application FastAPI.
+app = FastAPI(
+    title="Supply Chain Radar API",
+    version="2.0",
+    lifespan=lifespan,
+)
 
+# Configuration CORS : autorise le frontend Next.js sur les ports 3000 et 3005.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
@@ -54,13 +75,14 @@ app.add_middleware(
 
 @app.get("/api/health", tags=["Health"])
 async def health():
+    """Sonde de disponibilité de l'API."""
     return {"status": "UP"}
 
 
-# Routeurs REST sous le préfixe /api.
+# Inclusion de tous les routeurs existants sous le préfixe /api.
 for module in (warehouses, products, alerts, movements, predict, inventory, users):
     app.include_router(module.router, prefix="/api")
 
-# Endpoint WebSocket natif à la racine : /ws (désactivé sans Redis).
+# Endpoint WebSocket natif /ws à la racine (actif uniquement avec Redis).
 if settings.ENABLE_REDIS:
     app.include_router(ws.router)

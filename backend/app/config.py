@@ -15,8 +15,11 @@ class Settings(BaseSettings):
     ENABLE_REDIS: bool = False
     # Canal Redis de diffusion des alertes.
     ALERTS_CHANNEL: str = "alerts"
-    # Origines CORS autorisées (frontend Next.js).
-    CORS_ORIGINS: list[str] = ["http://localhost:3000"]
+    # Origines CORS autorisées (frontend Next.js : ports 3000 et 3005).
+    CORS_ORIGINS: list[str] = [
+        "http://localhost:3000",
+        "http://localhost:3005",
+    ]
 
     model_config = SettingsConfigDict(
         env_file=".env",
