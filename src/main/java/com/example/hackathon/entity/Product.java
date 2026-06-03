@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,15 +21,19 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+@ToString(exclude = {"category", "stockMovements"})
 @Entity
 @Table(
 		name = "product",
@@ -39,6 +44,7 @@ import lombok.Setter;
 		})
 public class Product extends AuditableEntity {
 
+	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -57,7 +63,7 @@ public class Product extends AuditableEntity {
 	private String description;
 
 	@NotNull
-	@Min(0)
+	@DecimalMin(value = "0.0", inclusive = true)
 	@Column(nullable = false, precision = 10, scale = 2)
 	private BigDecimal price;
 
@@ -79,4 +85,14 @@ public class Product extends AuditableEntity {
 	@Builder.Default
 	@OneToMany(mappedBy = "product")
 	private List<StockMovement> stockMovements = new ArrayList<>();
+
+	public void addStockMovement(StockMovement movement) {
+		stockMovements.add(movement);
+		movement.setProduct(this);
+	}
+
+	public void removeStockMovement(StockMovement movement) {
+		stockMovements.remove(movement);
+		movement.setProduct(null);
+	}
 }

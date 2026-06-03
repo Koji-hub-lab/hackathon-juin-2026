@@ -15,31 +15,31 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import jakarta.persistence.EntityListeners;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+@ToString(exclude = "product")
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @Table(
 		name = "stock_movement",
 		indexes = {
 			@Index(name = "idx_movement_product", columnList = "product_id"),
 			@Index(name = "idx_movement_created", columnList = "created_at")
 		})
-public class StockMovement {
+public class StockMovement extends AuditableEntity {
 
+	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -62,8 +62,4 @@ public class StockMovement {
 	@Size(max = 255)
 	@Column(length = 255)
 	private String reason;
-
-	@CreatedDate
-	@Column(name = "created_at", nullable = false, updatable = false)
-	private LocalDateTime createdAt;
 }

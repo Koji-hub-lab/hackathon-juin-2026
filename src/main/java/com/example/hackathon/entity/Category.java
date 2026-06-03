@@ -13,19 +13,24 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+@ToString(exclude = "products")
 @Entity
 @Table(name = "category")
 public class Category extends AuditableEntity {
 
+	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -41,4 +46,14 @@ public class Category extends AuditableEntity {
 	@Builder.Default
 	@OneToMany(mappedBy = "category")
 	private List<Product> products = new ArrayList<>();
+
+	public void addProduct(Product product) {
+		products.add(product);
+		product.setCategory(this);
+	}
+
+	public void removeProduct(Product product) {
+		products.remove(product);
+		product.setCategory(null);
+	}
 }
