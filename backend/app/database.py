@@ -40,6 +40,10 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
         yield session
 
 
+# Alias de la dépendance d'injection de session (PostgreSQL via SQLAlchemy).
+get_db = get_session
+
+
 async def init_db() -> None:
     """Crée les tables (migration) puis injecte les données initiales (seed)."""
     # Import tardif pour enregistrer les tables sur Base.metadata.

@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import get_session
+from app.database import get_db
 from app.models import Product, Warehouse
 from app.schemas import InventoryView
 
@@ -14,7 +14,7 @@ router = APIRouter(prefix="/inventory", tags=["Inventory"])
 @router.get("", response_model=list[InventoryView])
 async def get_inventory(
     warehouseId: Optional[int] = None,
-    session: AsyncSession = Depends(get_session),
+    session: AsyncSession = Depends(get_db),
 ):
     wh_stmt = select(Warehouse).order_by(Warehouse.id)
     if warehouseId is not None:

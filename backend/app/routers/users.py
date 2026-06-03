@@ -3,23 +3,21 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import get_session
+from app.database import get_db
 from app.models import User
-from app.schemas import UserCreate, UserSchema
+from app.schemas import UserIn, UserOut
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
-@router.get("", response_model=list[UserSchema])
-async def get_all(session: AsyncSession = Depends(get_session)):
+@router.get("", response_model=list[UserOut])
+async def get_all(session: AsyncSession = Depends(get_db)):
     result = await session.scalars(select(User).order_by(User.id))
     return result.all()
 
 
 @router.post("", status_code=201)
-async def create_user(
-    body: UserCreate, session: AsyncSession = Depends(get_session)
-):
+async def create_user(body: UserIn, session: AsyncSession = Depends(get_db)):
     if not body.name or not body.role or not body.group:
         return JSONResponse(
             status_code=400,
@@ -40,4 +38,4 @@ async def create_user(
     session.add(user)
     await session.commit()
 
-    return UserSchema.model_validate(user).model_dump()
+    return UserOut.model_validate(user).model_dump()

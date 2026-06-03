@@ -4,17 +4,17 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import get_session
+from app.database import get_db
 from app.models import Alert
-from app.schemas import AlertSchema
+from app.schemas import AlertOut
 
 router = APIRouter(prefix="/alerts", tags=["Alerts"])
 
 
-@router.get("", response_model=list[AlertSchema])
+@router.get("", response_model=list[AlertOut])
 async def get_all(
     level: Optional[str] = None,
-    session: AsyncSession = Depends(get_session),
+    session: AsyncSession = Depends(get_db),
 ):
     stmt = select(Alert)
     if level:

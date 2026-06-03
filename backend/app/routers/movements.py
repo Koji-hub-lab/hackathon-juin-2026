@@ -2,18 +2,16 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import get_session
+from app.database import get_db
 from app.models import Movement, Warehouse
-from app.schemas import MovementRequest
+from app.schemas import MovementIn
 from app.services.scheduler import _now_iso
 
 router = APIRouter(prefix="/movement", tags=["Movements"])
 
 
 @router.post("")
-async def create_movement(
-    req: MovementRequest, session: AsyncSession = Depends(get_session)
-):
+async def create_movement(req: MovementIn, session: AsyncSession = Depends(get_db)):
     if (
         req.warehouseId is None
         or req.productId is None
@@ -40,6 +38,7 @@ async def create_movement(
     delta = req.quantity if req.type == "IN" else -req.quantity
     warehouse.stock = max(0, warehouse.stock + delta)
 
+    # Historise le mouvement (utilisé par l'algorithme de prédiction).
     session.add(
         Movement(
             warehouseId=req.warehouseId,
