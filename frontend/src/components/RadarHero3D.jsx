@@ -22,7 +22,7 @@
  * RadarHero.jsx — pour éviter toute exécution de Three.js côté serveur.
  */
 
-import { useMemo, useRef } from "react";
+import { Component, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Html, Line } from "@react-three/drei";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -294,10 +294,52 @@ function RadarScene({ progress, selected }) {
   );
 }
 
+// --- Garde-fou : Error Boundary (jamais de blocage silencieux) -------------
+
+class CanvasErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error) {
+    // Trace l'erreur WebGL/Three.js au lieu de rester bloqué sur un loader.
+    console.error("[RadarHero3D] Erreur de rendu 3D :", error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex h-full w-full items-center justify-center bg-[#020617]">
+          <span className="font-mono text-sm text-red-400">
+            Rendu 3D indisponible (WebGL).
+          </span>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 // --- Composant exporté (conteneur scroll + Canvas + overlay) ---------------
 
 export default function RadarHero3D() {
   const containerRef = useRef(null);
+
+  // Garde de montage : on n'initialise Three.js qu'une fois le navigateur prêt
+  // (DOM monté + objet window disponible). Évite la boucle d'attente de taille.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    // rAF : on attend qu'une frame soit peinte (DOM mesuré) avant d'initialiser
+    // Three.js — évite le conteneur de taille 0 et le set-state synchrone.
+    const id = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   // Progression du scroll sur toute la hauteur du conteneur (300vh).
   const { scrollYProgress } = useScroll({
@@ -315,9 +357,17 @@ export default function RadarHero3D() {
   const hintOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
 
   return (
-    <section ref={containerRef} className="relative h-[300vh] w-full bg-[#020617]">
-      {/* Scène fixe pendant le défilement. */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
+    <section
+      ref={containerRef}
+      className="relative w-full bg-[#020617]"
+      style={{ height: "300vh", minHeight: "300vh" }}
+    >
+      {/* Scène fixe pendant le défilement — dimensions explicites obligatoires
+          (un parent de hauteur 0 ferait tourner R3F en boucle sans rendu). */}
+      <div
+        className="sticky top-0 overflow-hidden"
+        style={{ position: "sticky", width: "100%", height: "100vh" }}
+      >
         {/* Lueur radiale d'arrière-plan. */}
         <div
           className="pointer-events-none absolute inset-0"
@@ -327,13 +377,25 @@ export default function RadarHero3D() {
           }}
         />
 
-        <Canvas
-          camera={{ position: [0, 6, 11], fov: 50 }}
-          dpr={[1, 2]}
-          gl={{ antialias: true, powerPreference: "high-performance" }}
-        >
-          <RadarScene progress={scrollYProgress} selected={selected} />
-        </Canvas>
+        {/* Canvas monté uniquement côté client, une fois le navigateur prêt. */}
+        {mounted ? (
+          <CanvasErrorBoundary>
+            <Canvas
+              style={{ width: "100%", height: "100%", display: "block" }}
+              camera={{ position: [0, 6, 11], fov: 50 }}
+              dpr={[1, 2]}
+              gl={{ antialias: true, powerPreference: "high-performance" }}
+            >
+              <RadarScene progress={scrollYProgress} selected={selected} />
+            </Canvas>
+          </CanvasErrorBoundary>
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <span className="animate-pulse font-mono text-sm tracking-widest text-cyan-400">
+              Initialisation du radar…
+            </span>
+          </div>
+        )}
 
         {/* Overlay textuel (hors Canvas, piloté par framer-motion). */}
         <motion.div
