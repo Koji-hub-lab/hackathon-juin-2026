@@ -1,67 +1,26 @@
-# Hackathon Juin 2026 — Frontend
+# Hackathon Juin 2026
 
-Application **Next.js** (App Router, TypeScript, Tailwind) pour la branche `frontend` du dépôt [hackathon-juin-2026](https://github.com/koji-hub-lab/hackathon-juin-2026).
+Dépôt du hackathon [Koji-hub-lab](https://github.com/Koji-hub-lab/hackathon-juin-2026).
 
-Le backend **Spring Boot** (JPA, MySQL) vit sur la branche [`backend`](https://github.com/koji-hub-lab/hackathon-juin-2026/tree/backend) et écoute par défaut sur le port **8080**.
+## Structure
 
-## Prérequis
+| Dossier / branche | Stack |
+|-------------------|--------|
+| [`frontend/`](frontend/) | Next.js (App Router, TypeScript, Tailwind) |
+| Branche `backend` | Spring Boot + MySQL (port 8080) |
 
-- Node.js 20+
-- npm
-- Backend optionnel en local pour tester les appels API
-
-## Installation
+## Démarrage rapide — frontend
 
 ```bash
+cd frontend
 npm install
 cp .env.local.example .env.local
+npm run dev
 ```
 
-## Variables d'environnement
+Documentation complète : [frontend/README.md](frontend/README.md).
 
-| Variable | Description | Défaut |
-|----------|-------------|--------|
-| `NEXT_PUBLIC_API_URL` | URL du backend Spring Boot | `http://localhost:8080` |
+## Branches Git
 
-En développement, les requêtes vers `/api/*` sont proxifiées vers le backend via `next.config.ts` (évite les problèmes CORS).
-
-## Scripts
-
-```bash
-npm run dev    # next dev --turbopack
-npm run build  # build de production
-npm run start  # serveur de production
-npm run lint   # ESLint
-```
-
-## Structure du projet
-
-```
-src/
-├── app/           # routes App Router
-├── components/ui/ # composants réutilisables
-├── hooks/         # hooks React client
-├── lib/api/       # client HTTP vers le backend
-└── types/         # types globaux
-```
-
-Les appels HTTP passent par `src/lib/api/client.ts` (`apiGet`, etc.).
-
-## Branches du dépôt
-
-| Branche | Stack |
-|---------|--------|
-| `frontend` | Next.js (ce projet) |
-| `backend` | Spring Boot + MySQL |
-
-Chaque branche se déploie indépendamment ; synchroniser les contrats API (DTO) au fil du développement.
-
-## Backend local
-
-Sur la branche `backend` :
-
-```bash
-./mvnw spring-boot:run
-```
-
-Configurer MySQL selon `src/main/resources/application.properties` avant de lancer l'API.
+- `frontend` — application Next.js dans `frontend/`
+- `backend` — API Spring Boot à la racine de cette branche
