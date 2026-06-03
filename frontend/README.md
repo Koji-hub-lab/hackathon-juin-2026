@@ -1,14 +1,24 @@
-# Hackathon Juin 2026 — Frontend
+# Supply Chain Radar — Frontend
 
-Application **Next.js** (App Router, TypeScript, Tailwind) dans le dossier `frontend/` du dépôt [hackathon-juin-2026](https://github.com/Koji-hub-lab/hackathon-juin-2026).
+Tableau de bord **Next.js** (App Router, JavaScript, Tailwind) du projet **Supply Chain Radar** — Hackathon J.U.I.N 2026, Thème 10.
 
-Le backend **Spring Boot** (JPA, MySQL) vit sur la branche [`backend`](https://github.com/koji-hub-lab/hackathon-juin-2026/tree/backend) et écoute par défaut sur le port **8080**.
+Superviseur multi-entrepôts avec prédiction IA de rupture de stock. Le backend **Spring Boot** (branche `backend`) écoute sur le port **8080** ; ce frontend tourne sur le port **3000**.
+
+## Stack
+
+- Next.js 16 (App Router) · React 19
+- JavaScript (pas de TypeScript, convention équipe)
+- Tailwind CSS v4
+- Recharts (graphiques)
+- Axios (appels REST)
+- SockJS + `@stomp/stompjs` (WebSocket STOMP temps réel)
+
+> Note : le README équipe mentionne Next.js 14 ; le projet a été initialisé avec Next.js 16 (compatible, App Router identique). Tailwind v4 remplace la config `tailwind.config.js` par une config CSS dans `globals.css`.
 
 ## Prérequis
 
 - Node.js 20+
 - npm
-- Backend optionnel en local pour tester les appels API
 
 ## Installation
 
@@ -24,47 +34,49 @@ cp .env.local.example .env.local
 |----------|-------------|--------|
 | `NEXT_PUBLIC_API_URL` | URL du backend Spring Boot | `http://localhost:8080` |
 
-En développement, les requêtes vers `/api/*` sont proxifiées vers le backend via `next.config.ts` (évite les problèmes CORS).
-
 ## Scripts
 
 Depuis le dossier `frontend/` :
 
 ```bash
-npm run dev    # next dev --turbopack
+npm run dev    # next dev --turbopack (port 3000)
 npm run build  # build de production
-npm run start  # serveur de production
+npm run start  # serveur de production (port 3000)
 npm run lint   # ESLint
 ```
 
-## Structure du projet
+## Structure
 
 ```
 src/
-├── app/           # routes App Router
-├── components/ui/ # composants réutilisables
-├── hooks/         # hooks React client
-├── lib/api/       # client HTTP vers le backend
-└── types/         # types globaux
+├── app/
+│   ├── layout.js          # Sidebar + Navbar + thème sombre
+│   ├── page.js            # redirige vers /dashboard
+│   ├── dashboard/         # KPI, graphiques, widget IA, temps réel
+│   ├── warehouses/        # taux de remplissage par entrepôt
+│   ├── alerts/            # alertes filtrables par niveau
+│   └── products/          # catalogue groupé par entrepôt
+├── mock/data.js           # données simulées (Phase 1 + repli)
+├── services/              # api.js (Axios) + services par domaine
+├── components/
+│   ├── layout/            # Sidebar, Navbar
+│   ├── charts/            # StockBarChart, TrendLineChart (Recharts)
+│   ├── widgets/           # StockCard, AlertCard, IAPredictionWidget
+│   └── ui/                # Badge, ProgressBar
+└── hooks/useSocket.js     # WebSocket STOMP (SockJS)
 ```
 
-Les appels HTTP passent par `src/lib/api/client.ts` (`apiGet`, etc.).
+## Phase 1 / Phase 2 — intégration backend
 
-## Branches du dépôt
+Les services (`src/services/*`) appellent l'API réelle (`/api/...` sur le port 8080)
+et **basculent automatiquement sur les mocks** (`src/mock/data.js`) si le backend
+n'est pas joignable. Le dashboard est donc démontrable seul, et se connecte au
+backend dès qu'il est lancé — sans modification de code.
 
-| Emplacement | Stack |
-|-------------|--------|
-| `frontend/` (cette branche) | Next.js |
-| branche `backend` | Spring Boot + MySQL |
+Le hook `useSocket` se connecte à `ws://localhost:8080/ws` (topic `/topic/alerts`)
+et affiche un badge « 🟢 Temps réel actif » lorsque la connexion STOMP est établie.
 
-Chaque stack se déploie indépendamment ; synchroniser les contrats API (DTO) au fil du développement.
+## Contrat API
 
-## Backend local
-
-Sur la branche `backend` :
-
-```bash
-./mvnw spring-boot:run
-```
-
-Configurer MySQL selon `src/main/resources/application.properties` avant de lancer l'API.
+Voir la Section 4 du README équipe (`/api/warehouses`, `/api/products`,
+`/api/alerts`, `/api/predict`, `/api/inventory`, `/api/users`, `POST /api/movement`).
