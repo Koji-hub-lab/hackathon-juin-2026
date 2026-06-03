@@ -11,8 +11,11 @@ import {
   Legend,
 } from "recharts";
 
+import { useMounted } from "@/hooks/useMounted";
+
 // Stock vs capacité par entrepôt.
 export default function StockBarChart({ warehouses = [] }) {
+  const mounted = useMounted();
   const data = warehouses.map((w) => ({
     name: w.name,
     Stock: w.stock,
@@ -25,24 +28,27 @@ export default function StockBarChart({ warehouses = [] }) {
         📦 Stock par entrepôt
       </h2>
       <div className="h-72 w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 8 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
-            <XAxis dataKey="name" stroke="#9ca3af" fontSize={12} />
-            <YAxis stroke="#9ca3af" fontSize={12} />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "#111827",
-                border: "1px solid #374151",
-                borderRadius: 8,
-                color: "#f3f4f6",
-              }}
-            />
-            <Legend wrapperStyle={{ fontSize: 12 }} />
-            <Bar dataKey="Capacité" fill="#374151" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="Stock" fill="#60a5fa" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+        {/* Rendu différé au client : évite le warning Recharts (taille 0 au SSR). */}
+        {mounted && (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 8 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
+              <XAxis dataKey="name" stroke="#9ca3af" fontSize={12} />
+              <YAxis stroke="#9ca3af" fontSize={12} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#111827",
+                  border: "1px solid #374151",
+                  borderRadius: 8,
+                  color: "#f3f4f6",
+                }}
+              />
+              <Legend wrapperStyle={{ fontSize: 12 }} />
+              <Bar dataKey="Capacité" fill="#374151" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="Stock" fill="#60a5fa" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   );
