@@ -4,12 +4,15 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    # Connexion PostgreSQL asynchrone (driver asyncpg).
-    DATABASE_URL: str = (
-        "postgresql+asyncpg://supplychain:supplychain@localhost:5432/supplychain"
-    )
+    # TEMPORAIRE : SQLite local pour tester sans Docker.
+    # Pour PostgreSQL, surcharger via .env :
+    #   DATABASE_URL=postgresql+asyncpg://supplychain:supplychain@localhost:5432/supplychain
+    DATABASE_URL: str = "sqlite+aiosqlite:///./test.db"
     # Connexion Redis (Pub/Sub temps réel).
     REDIS_URL: str = "redis://localhost:6379/0"
+    # TEMPORAIRE : Redis + WebSocket désactivés pour démarrer sans Docker.
+    # Repasser à True (ou définir ENABLE_REDIS=true dans .env) avec Redis lancé.
+    ENABLE_REDIS: bool = False
     # Canal Redis de diffusion des alertes.
     ALERTS_CHANNEL: str = "alerts"
     # Origines CORS autorisées (frontend Next.js).

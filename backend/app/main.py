@@ -28,13 +28,16 @@ from app.services.scheduler import start_scheduler
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup : migration + seed, puis tâche d'alertes Redis.
+    # Startup : migration + seed.
     await init_db()
-    task = start_scheduler()
+    # Tâche d'alertes Redis (désactivable pour tester sans Docker).
+    task = start_scheduler() if settings.ENABLE_REDIS else None
     yield
     # Shutdown : arrêt propre des ressources.
-    task.cancel()
-    await close_redis()
+    if task is not None:
+        task.cancel()
+    if settings.ENABLE_REDIS:
+        await close_redis()
     await engine.dispose()
 
 
@@ -58,5 +61,6 @@ async def health():
 for module in (warehouses, products, alerts, movements, predict, inventory, users):
     app.include_router(module.router, prefix="/api")
 
-# Endpoint WebSocket natif à la racine : /ws.
-app.include_router(ws.router)
+# Endpoint WebSocket natif à la racine : /ws (désactivé sans Redis).
+if settings.ENABLE_REDIS:
+    app.include_router(ws.router)
