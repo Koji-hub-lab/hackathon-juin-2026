@@ -1,12 +1,16 @@
-"""Schémas Pydantic v2 — noms de champs en camelCase pour coller strictement
-au contrat API documenté (Section 4 du README équipe)."""
+"""Schémas Pydantic v2 (réponses API) — camelCase, fidèles au contrat JSON.
+
+`from_attributes=True` permet la sérialisation directe des objets ORM SQLAlchemy.
+"""
 
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
-class Warehouse(BaseModel):
+class WarehouseSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     name: str
     city: str
@@ -15,7 +19,9 @@ class Warehouse(BaseModel):
     weeklyUsage: int
 
 
-class Product(BaseModel):
+class ProductSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     name: str
     warehouseId: int
@@ -24,7 +30,9 @@ class Product(BaseModel):
     unit: str
 
 
-class Alert(BaseModel):
+class AlertSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     type: str
     message: str
@@ -66,14 +74,15 @@ class InventoryView(BaseModel):
 
 
 class MovementRequest(BaseModel):
-    # Champs optionnels : la validation métier renvoie le 400 documenté.
     warehouseId: Optional[int] = None
     productId: Optional[int] = None
     quantity: Optional[int] = None
     type: Optional[str] = None
 
 
-class User(BaseModel):
+class UserSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     name: str
     role: str

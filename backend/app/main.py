@@ -1,8 +1,8 @@
-"""Application FastAPI — Supply Chain Radar.
+"""Application FastAPI — Supply Chain Radar (async, PostgreSQL + Redis).
 
-Configure CORS (frontend port 3000), charge la base de données au démarrage,
-lance le scheduler d'alertes et expose tous les routeurs sous le préfixe /api,
-plus l'endpoint WebSocket natif /ws.
+Configure CORS (frontend port 3000), initialise la base (migration + seed) au
+démarrage, lance le scheduler d'alertes Redis et expose tous les routeurs sous
+le préfixe /api, plus l'endpoint WebSocket natif /ws.
 """
 
 from contextlib import asynccontextmanager
@@ -10,7 +10,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.database import db
+from app.config import settings
+from app.database import engine, init_db
+from app.redis_client import close_redis
 from app.routers import (
     alerts,
     inventory,
@@ -26,19 +28,21 @@ from app.services.scheduler import start_scheduler
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup : charge mock.json en mémoire et démarre la tâche d'alertes.
-    db.load()
+    # Startup : migration + seed, puis tâche d'alertes Redis.
+    await init_db()
     task = start_scheduler()
     yield
-    # Shutdown : arrête proprement la tâche de fond.
+    # Shutdown : arrêt propre des ressources.
     task.cancel()
+    await close_redis()
+    await engine.dispose()
 
 
-app = FastAPI(title="Supply Chain Radar API", version="1.0", lifespan=lifespan)
+app = FastAPI(title="Supply Chain Radar API", version="2.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=settings.CORS_ORIGINS,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
     allow_credentials=True,
@@ -46,7 +50,7 @@ app.add_middleware(
 
 
 @app.get("/api/health", tags=["Health"])
-def health():
+async def health():
     return {"status": "UP"}
 
 

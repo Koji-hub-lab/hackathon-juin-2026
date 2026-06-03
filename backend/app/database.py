@@ -1,56 +1,68 @@
-"""Base de données en mémoire (Singleton) basée sur resources/mock.json.
+"""Couche d'accès aux données — SQLAlchemy asynchrone (PostgreSQL via asyncpg).
 
-Chargement et sauvegarde synchrones. Aucune base externe : les données vivent
-en mémoire et sont persistées dans le fichier JSON lors des mutations.
+Fournit l'engine, la fabrique de sessions, la dépendance `get_session` et le
+script de migration/seed automatique exécuté au démarrage.
 """
 
-import json
-import threading
-from pathlib import Path
-from typing import Any, Dict, List
+from typing import AsyncGenerator
 
-MOCK_PATH = Path(__file__).resolve().parent.parent / "resources" / "mock.json"
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
+from sqlalchemy.orm import DeclarativeBase
 
-
-class Database:
-    _instance: "Database | None" = None
-    _lock = threading.Lock()
-
-    def __new__(cls) -> "Database":
-        if cls._instance is None:
-            with cls._lock:
-                if cls._instance is None:
-                    instance = super().__new__(cls)
-                    instance._data = {}
-                    cls._instance = instance
-        return cls._instance
-
-    def load(self) -> None:
-        """Charge mock.json en mémoire (synchrone)."""
-        with open(MOCK_PATH, encoding="utf-8") as f:
-            self._data = json.load(f)
-
-    def save(self) -> None:
-        """Persiste l'état courant dans mock.json (synchrone)."""
-        with open(MOCK_PATH, "w", encoding="utf-8") as f:
-            json.dump(self._data, f, ensure_ascii=False, indent=2)
-
-    @property
-    def warehouses(self) -> List[Dict[str, Any]]:
-        return self._data.setdefault("warehouses", [])
-
-    @property
-    def products(self) -> List[Dict[str, Any]]:
-        return self._data.setdefault("products", [])
-
-    @property
-    def alerts(self) -> List[Dict[str, Any]]:
-        return self._data.setdefault("alerts", [])
-
-    @property
-    def users(self) -> List[Dict[str, Any]]:
-        return self._data.setdefault("users", [])
+from app.config import settings
 
 
-# Instance Singleton partagée par toute l'application.
-db = Database()
+class Base(DeclarativeBase):
+    pass
+
+
+engine = create_async_engine(
+    settings.DATABASE_URL,
+    echo=False,
+    pool_pre_ping=True,
+)
+
+async_session = async_sessionmaker(
+    engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+)
+
+
+async def get_session() -> AsyncGenerator[AsyncSession, None]:
+    """Dépendance FastAPI : fournit une session async par requête."""
+    async with async_session() as session:
+        yield session
+
+
+async def init_db() -> None:
+    """Crée les tables (migration) puis injecte les données initiales (seed)."""
+    # Import tardif pour enregistrer les tables sur Base.metadata.
+    import app.models  # noqa: F401
+
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    await _seed()
+
+
+async def _seed() -> None:
+    """Injecte les données initiales si la base est vide (idempotent)."""
+    from app.models import Alert, Product, User, Warehouse
+    from app.seed_data import SEED
+
+    async with async_session() as session:
+        count = await session.scalar(select(func.count()).select_from(Warehouse))
+        if count:
+            return
+
+        session.add_all(Warehouse(**w) for w in SEED["warehouses"])
+        session.add_all(Product(**p) for p in SEED["products"])
+        session.add_all(Alert(**a) for a in SEED["alerts"])
+        session.add_all(User(**u) for u in SEED["users"])
+        await session.commit()

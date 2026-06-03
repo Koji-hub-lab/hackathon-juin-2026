@@ -1,44 +1,53 @@
 from typing import Optional
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import db
-from app.models import InventoryView
+from app.database import get_session
+from app.models import Product, Warehouse
+from app.schemas import InventoryView
 
 router = APIRouter(prefix="/inventory", tags=["Inventory"])
 
 
 @router.get("", response_model=list[InventoryView])
-def get_inventory(warehouseId: Optional[int] = None):
-    warehouses = db.warehouses
+async def get_inventory(
+    warehouseId: Optional[int] = None,
+    session: AsyncSession = Depends(get_session),
+):
+    wh_stmt = select(Warehouse).order_by(Warehouse.id)
     if warehouseId is not None:
-        warehouses = [w for w in warehouses if w["id"] == warehouseId]
+        wh_stmt = wh_stmt.where(Warehouse.id == warehouseId)
+    warehouses = (await session.scalars(wh_stmt)).all()
+
+    products = (await session.scalars(select(Product))).all()
 
     result = []
     for w in warehouses:
-        products = [
+        wh_products = [
             {
-                "id": p["id"],
-                "name": p["name"],
-                "quantity": p["quantity"],
-                "minThreshold": p["minThreshold"],
-                "unit": p["unit"],
-                "belowThreshold": p["quantity"] < p["minThreshold"],
+                "id": p.id,
+                "name": p.name,
+                "quantity": p.quantity,
+                "minThreshold": p.minThreshold,
+                "unit": p.unit,
+                "belowThreshold": p.quantity < p.minThreshold,
             }
-            for p in db.products
-            if p["warehouseId"] == w["id"]
+            for p in products
+            if p.warehouseId == w.id
         ]
-        fill_percent = round(w["stock"] / w["capacity"] * 100) if w["capacity"] else 0
+        fill_percent = round(w.stock / w.capacity * 100) if w.capacity else 0
         result.append(
             {
-                "warehouseId": w["id"],
-                "warehouseName": w["name"],
-                "city": w["city"],
-                "stock": w["stock"],
-                "capacity": w["capacity"],
+                "warehouseId": w.id,
+                "warehouseName": w.name,
+                "city": w.city,
+                "stock": w.stock,
+                "capacity": w.capacity,
                 "fillPercent": fill_percent,
                 "belowThreshold": fill_percent < 25,
-                "products": products,
+                "products": wh_products,
             }
         )
     return result

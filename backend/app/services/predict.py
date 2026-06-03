@@ -1,19 +1,18 @@
 """Algorithme IA de prédiction de rupture de stock.
 
-Portage fidèle de PredictService.java (tendance linéaire) : à partir de la
-consommation hebdomadaire, on estime le nombre de jours avant rupture, la
-tendance et un score de confiance.
+Portage fidèle de PredictService.java (tendance linéaire). Accepte tout objet
+exposant les attributs id, name, stock, capacity, weeklyUsage (modèle ORM).
 """
 
 import math
 
-from app.models import Prediction
+from app.schemas import Prediction
 
 
-def predict(w: dict) -> Prediction:
-    stock = w["stock"]
-    capacity = w["capacity"]
-    weekly_usage = w["weeklyUsage"]
+def predict(w) -> Prediction:
+    stock = w.stock
+    capacity = w.capacity
+    weekly_usage = w.weeklyUsage
 
     # Consommation journalière moyenne.
     daily_usage = weekly_usage / 7.0
@@ -51,8 +50,8 @@ def predict(w: dict) -> Prediction:
         recommendation = "Stock suffisant"
 
     return Prediction(
-        warehouseId=w["id"],
-        warehouseName=w["name"],
+        warehouseId=w.id,
+        warehouseName=w.name,
         currentStock=stock,
         capacity=capacity,
         fillPercent=round(fill_ratio * 100),

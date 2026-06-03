@@ -1,14 +1,19 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import db
-from app.models import MovementRequest
+from app.database import get_session
+from app.models import Movement, Warehouse
+from app.schemas import MovementRequest
+from app.services.scheduler import _now_iso
 
 router = APIRouter(prefix="/movement", tags=["Movements"])
 
 
 @router.post("")
-def create_movement(req: MovementRequest):
+async def create_movement(
+    req: MovementRequest, session: AsyncSession = Depends(get_session)
+):
     if (
         req.warehouseId is None
         or req.productId is None
@@ -28,14 +33,22 @@ def create_movement(req: MovementRequest):
             content={"error": 'type doit être "IN" ou "OUT"'},
         )
 
-    warehouse = next(
-        (w for w in db.warehouses if w["id"] == req.warehouseId), None
-    )
+    warehouse = await session.get(Warehouse, req.warehouseId)
     if warehouse is None:
         return JSONResponse(status_code=404, content={"error": "Entrepôt non trouvé"})
 
     delta = req.quantity if req.type == "IN" else -req.quantity
-    warehouse["stock"] = max(0, warehouse["stock"] + delta)
-    db.save()
+    warehouse.stock = max(0, warehouse.stock + delta)
 
-    return {"success": True, "newStock": warehouse["stock"]}
+    session.add(
+        Movement(
+            warehouseId=req.warehouseId,
+            productId=req.productId,
+            quantity=req.quantity,
+            type=req.type,
+            createdAt=_now_iso(),
+        )
+    )
+    await session.commit()
+
+    return {"success": True, "newStock": warehouse.stock}

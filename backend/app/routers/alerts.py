@@ -1,17 +1,24 @@
 from typing import Optional
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import db
+from app.database import get_session
 from app.models import Alert
+from app.schemas import AlertSchema
 
 router = APIRouter(prefix="/alerts", tags=["Alerts"])
 
 
-@router.get("", response_model=list[Alert])
-def get_all(level: Optional[str] = None):
-    alerts = db.alerts
+@router.get("", response_model=list[AlertSchema])
+async def get_all(
+    level: Optional[str] = None,
+    session: AsyncSession = Depends(get_session),
+):
+    stmt = select(Alert)
     if level:
-        alerts = [a for a in alerts if a["level"] == level]
-    # Tri par date de création décroissante.
-    return sorted(alerts, key=lambda a: a["createdAt"], reverse=True)
+        stmt = stmt.where(Alert.level == level)
+    stmt = stmt.order_by(Alert.createdAt.desc())
+    result = await session.scalars(stmt)
+    return result.all()
