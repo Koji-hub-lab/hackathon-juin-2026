@@ -21,7 +21,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="fr" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="flex min-h-screen bg-gray-950 text-white antialiased">
+      <body
+        suppressHydrationWarning
+        className="flex min-h-screen bg-gray-950 text-white antialiased"
+        style={{ backgroundColor: "#030712", color: "#f3f4f6" }}
+      >
         <Sidebar />
         <div className="flex min-w-0 flex-1 flex-col">
           <Navbar />
