@@ -1,7 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/layout/Sidebar";
-import Navbar from "@/components/layout/Navbar";
+import AppChrome from "@/components/layout/AppChrome";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,11 +24,7 @@ export default function RootLayout({ children }) {
         suppressHydrationWarning
         className="flex h-screen overflow-hidden bg-slate-50 text-slate-900 antialiased"
       >
-        <Sidebar />
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-          <Navbar />
-          <main className="min-h-0 flex-1 overflow-hidden">{children}</main>
-        </div>
+        <AppChrome>{children}</AppChrome>
       </body>
     </html>
   );

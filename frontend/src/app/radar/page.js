@@ -1,9 +1,9 @@
-import RadarHero from "@/components/RadarHero";
+import CommandCenter from "@/components/command/CommandCenter";
 
 export const metadata = {
-  title: "Radar Global 3D — Supply Chain Radar",
+  title: "Supply Chain Command Center — Radar 3D",
 };
 
 export default function RadarPage() {
-  return <RadarHero />;
+  return <CommandCenter />;
 }

@@ -1,5 +1,10 @@
-import { redirect } from "next/navigation";
+import CommandCenter from "@/components/command/CommandCenter";
 
-export default function Home() {
-  redirect("/dashboard");
+export const metadata = {
+  title: "Supply Chain Command Center",
+  description: "Centre de commandement logistique temps réel — radar 3D",
+};
+
+export default function HomePage() {
+  return <CommandCenter />;
 }
