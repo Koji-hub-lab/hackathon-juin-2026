@@ -4,22 +4,24 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV = [
-  { href: "/dashboard", label: "HUD", short: "⌂" },
-  { href: "/radar", label: "3D", short: "◎" },
-  { href: "/warehouses", label: "Sites", short: "▣" },
-  { href: "/alerts", label: "!", short: "!" },
-  { href: "/products", label: "SKU", short: "◫" },
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/radar", label: "Radar 3D" },
+  { href: "/warehouses", label: "Entrepôts" },
+  { href: "/alerts", label: "Alertes" },
+  { href: "/products", label: "Produits" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="z-40 flex w-[72px] shrink-0 flex-col border-r border-orange-500/20 bg-black lg:w-[88px]">
-      <div className="flex h-12 shrink-0 items-center justify-center border-b border-orange-500/20">
-        <span className="font-mono text-xs font-black text-orange-500">SCR</span>
+    <aside className="z-40 flex w-[72px] shrink-0 flex-col border-r border-slate-800/60 bg-[#080b11] lg:w-[88px]">
+      <div className="flex h-14 shrink-0 items-center justify-center border-b border-slate-800/60">
+        <span className="text-sm font-semibold tracking-tight text-slate-50">
+          SCR
+        </span>
       </div>
-      <nav className="flex flex-1 flex-col gap-1 p-2">
+      <nav className="flex flex-1 flex-col gap-1 p-3">
         {NAV.map((item) => {
           const active =
             pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -28,14 +30,13 @@ export default function Sidebar() {
               key={item.href}
               href={item.href}
               title={item.label}
-              className={`flex flex-col items-center rounded border py-2.5 font-mono transition-colors ${
+              className={`rounded-lg px-2 py-2.5 text-center text-[10px] font-medium transition-colors ${
                 active
-                  ? "border-orange-500/40 bg-orange-500/15 text-orange-500 shadow-[0_0_16px_rgba(249,115,22,0.12)]"
-                  : "border-transparent text-neutral-600 hover:border-orange-500/20 hover:text-neutral-400"
+                  ? "bg-slate-800/80 text-slate-50"
+                  : "text-slate-500 hover:bg-slate-900/60 hover:text-slate-300"
               }`}
             >
-              <span className="text-sm font-bold">{item.short}</span>
-              <span className="text-[8px] uppercase">{item.label}</span>
+              {item.label}
             </Link>
           );
         })}

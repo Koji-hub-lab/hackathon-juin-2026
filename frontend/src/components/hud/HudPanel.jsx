@@ -1,19 +1,22 @@
 "use client";
 
-export default function HudPanel({ title, sector, children, className = "" }) {
+/** Carte surface type Linear / Vercel — bordure fine, verre léger. */
+export default function HudPanel({ title, subtitle, children, className = "", noPadding = false }) {
   return (
     <div
-      className={`flex h-full min-h-0 flex-col overflow-hidden rounded-sm border border-orange-500/20 bg-black/50 shadow-[0_0_24px_rgba(249,115,22,0.08)] backdrop-blur-sm ${className}`}
+      className={`flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-white/5 bg-slate-900/40 shadow-sm backdrop-blur-md ${className}`}
     >
-      <div className="flex shrink-0 items-center justify-between border-b border-orange-500/20 px-3 py-1.5">
-        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-orange-500">
-          {sector}
-        </span>
-        <span className="font-mono text-[9px] uppercase tracking-wider text-neutral-500">
+      <div className="shrink-0 border-b border-slate-800/60 px-5 py-4">
+        <h3 className="text-sm font-medium tracking-tight text-slate-50">
           {title}
-        </span>
+        </h3>
+        {subtitle && (
+          <p className="mt-0.5 text-xs text-slate-500">{subtitle}</p>
+        )}
       </div>
-      <div className="min-h-0 flex-1 overflow-auto p-3">{children}</div>
+      <div className={`min-h-0 flex-1 overflow-auto ${noPadding ? "" : "p-5"}`}>
+        {children}
+      </div>
     </div>
   );
 }

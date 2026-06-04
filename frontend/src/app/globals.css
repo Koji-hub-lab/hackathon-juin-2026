@@ -1,18 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --bg-deep: #000000;
-  --bg-anthracite: #0a0a0a;
-  --orange-electric: #f97316;
-  --orange-bright: #ff7a1a;
-  --orange-glow: rgba(255, 92, 0, 0.45);
-  --foreground: #e2e8f0;
-  --muted: #64748b;
-  --line: rgba(255, 255, 255, 0.06);
+  --bg-app: #080b11;
+  --foreground: #f8fafc;
 }
 
 @theme inline {
-  --color-background: var(--bg-deep);
+  --color-background: var(--bg-app);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -20,87 +14,20 @@
 
 html,
 body {
-  background: var(--bg-deep);
+  background: var(--bg-app);
   color: var(--foreground);
-}
-
-/* Carte verre + lueur orange */
-.glass-panel {
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.06) 0%,
-    rgba(255, 255, 255, 0.02) 100%
-  );
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.4),
-    0 24px 48px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-.glow-orange {
-  box-shadow:
-    0 0 24px var(--orange-glow),
-    0 0 48px rgba(255, 92, 0, 0.15);
-}
-
-.text-metric {
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.04em;
-  line-height: 0.9;
-}
-
-.divider-hairline {
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--line) 20%,
-    var(--line) 80%,
-    transparent
-  );
-}
-
-::-webkit-scrollbar {
-  width: 5px;
-}
-
-::-webkit-scrollbar-track {
-  background: #050505;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #2a2a2a;
-  border-radius: 99px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--orange-electric);
-}
-
-/* ——— Military HUD ——— */
-.hud-scanlines {
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.4) 2px,
-    rgba(0, 0, 0, 0.4) 4px
-  );
 }
 
 .hud-radar-sweep {
   background: conic-gradient(
     from 0deg at 50% 50%,
     transparent 0deg,
-    rgba(249, 115, 22, 0.4) 28deg,
-    transparent 56deg
+    rgba(34, 211, 238, 0.12) 24deg,
+    transparent 48deg
   );
-  animation: hud-radar-spin 5s linear infinite;
-  mask-image: radial-gradient(circle, black 20%, transparent 70%);
-  -webkit-mask-image: radial-gradient(circle, black 20%, transparent 70%);
+  animation: hud-radar-spin 6s linear infinite;
+  mask-image: radial-gradient(circle, black 15%, transparent 72%);
+  -webkit-mask-image: radial-gradient(circle, black 15%, transparent 72%);
 }
 
 @keyframes hud-radar-spin {
@@ -109,32 +36,33 @@ body {
   }
 }
 
-.hud-node-alert {
-  animation: hud-blink 1.2s ease-in-out infinite;
+.hud-node-critical {
+  animation: hud-critical-pulse 2s ease-in-out infinite;
 }
 
-.hud-bar-pulse {
-  animation: hud-blink 1.5s ease-in-out infinite;
-}
-
-@keyframes hud-blink {
+@keyframes hud-critical-pulse {
   0%,
   100% {
     opacity: 1;
   }
   50% {
-    opacity: 0.35;
+    opacity: 0.45;
   }
 }
 
-.hud-wave-dash {
-  stroke-dasharray: 400;
-  stroke-dashoffset: 400;
-  animation: hud-wave-draw 4s linear infinite;
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-@keyframes hud-wave-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
 }
