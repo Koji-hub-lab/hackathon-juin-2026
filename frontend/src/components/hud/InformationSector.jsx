@@ -13,31 +13,33 @@ export default function InformationSector({ warehouses = [], connected }) {
   const inbound = warehouses.reduce((s, w) => s + (w.weeklyUsage || 0), 0);
 
   return (
-    <HudPanel sector="Information" title="Flux inter-régionaux">
-      <div className="space-y-3">
-        <div className="flex items-baseline justify-between border-b border-dashed border-cyan-500/20 pb-2">
-          <span className="font-mono text-[10px] text-slate-500">INBOUND CM</span>
-          <span className="font-mono text-2xl font-bold tabular-nums text-cyan-400">
+    <HudPanel sector="Information" title="Flux CM" className="h-full">
+      <div className="flex h-full flex-col gap-2">
+        <div className="flex items-baseline justify-between border-b border-orange-500/20 pb-2">
+          <span className="font-mono text-[10px] text-neutral-500">INBOUND</span>
+          <span className="font-mono text-xl font-bold tabular-nums text-neutral-100">
             {inbound}
-            <span className="ml-1 text-xs text-slate-600">t/sem</span>
+            <span className="ml-1 text-[10px] font-normal text-neutral-500">
+              t/sem
+            </span>
           </span>
         </div>
-        <p className="font-mono text-[9px] leading-relaxed text-slate-600">
-          Corridors actifs vers hubs nationaux · sync{" "}
-          <span className={connected ? "text-cyan-400" : "text-orange-500"}>
+        <p className="font-mono text-[9px] text-neutral-500">
+          SYNC{" "}
+          <span className={connected ? "text-orange-500" : "text-neutral-600"}>
             {connected ? "LIVE" : "OFFLINE"}
           </span>
         </p>
-        <ul className="space-y-2">
+        <ul className="min-h-0 flex-1 space-y-1.5 overflow-auto">
           {CORRIDORS.map((c) => (
             <li
               key={c.route}
-              className="border-l border-cyan-500/30 pl-3 font-mono text-[10px]"
+              className="border-l border-orange-500/30 pl-2 font-mono text-[10px]"
             >
-              <p className="text-cyan-300/90">{c.route}</p>
-              <p className="text-slate-500">
+              <p className="text-neutral-300">{c.route}</p>
+              <p className="text-neutral-500">
                 {c.flux} ·{" "}
-                <span className="tabular-nums text-slate-300">
+                <span className="tabular-nums text-neutral-400">
                   {c.load} {c.unit}
                 </span>
               </p>

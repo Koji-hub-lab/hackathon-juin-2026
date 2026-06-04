@@ -3,8 +3,7 @@
 import { useMemo } from "react";
 import HudPanel from "./HudPanel";
 
-/** Onde sinusoïdale simulée (trafic ciment). */
-function Waveform({ className = "" }) {
+function Waveform() {
   const path = useMemo(() => {
     const pts = [];
     for (let x = 0; x <= 200; x += 4) {
@@ -15,24 +14,13 @@ function Waveform({ className = "" }) {
   }, []);
 
   return (
-    <svg
-      viewBox="0 0 200 60"
-      className={`w-full ${className}`}
-      preserveAspectRatio="none"
-    >
+    <svg viewBox="0 0 200 60" className="h-12 w-full shrink-0" preserveAspectRatio="none">
       <path
         d={path}
         fill="none"
-        stroke="rgba(34,211,238,0.7)"
+        stroke="rgba(249,115,22,0.6)"
         strokeWidth="1"
         className="hud-wave-dash"
-      />
-      <path
-        d={path}
-        fill="none"
-        stroke="rgba(255,120,0,0.35)"
-        strokeWidth="0.5"
-        transform="translate(0, 4)"
       />
     </svg>
   );
@@ -53,31 +41,26 @@ export default function IdentificationSector({ products = [] }) {
   }, [products]);
 
   return (
-    <HudPanel sector="Search Sistem" title="Identification · Trafic BTP">
-      <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-slate-600">
-        Ciment & matériaux · temps réel
-      </p>
+    <HudPanel sector="Search Sistem" title="Trafic BTP" className="h-full">
       <Waveform />
-      <div className="mt-4 flex h-24 items-end justify-between gap-1 border-t border-dashed border-cyan-500/20 pt-3">
+      <div className="mt-2 flex min-h-0 flex-1 items-end justify-between gap-1 border-t border-orange-500/20 pt-2">
         {bars.length === 0 &&
           Array.from({ length: 7 }).map((_, i) => (
             <div
               key={i}
-              className="w-full max-w-[14px] bg-cyan-500/20"
+              className="w-full max-w-[12px] bg-orange-500/20"
               style={{ height: `${30 + i * 8}%` }}
             />
           ))}
         {bars.map((b) => (
-          <div key={b.label} className="flex flex-1 flex-col items-center gap-1">
+          <div key={b.label} className="flex flex-1 flex-col items-center gap-0.5">
             <div
-              className={`w-full max-w-[12px] transition-all ${
-                b.alert
-                  ? "bg-orange-500 hud-bar-pulse"
-                  : "bg-cyan-500/70"
+              className={`w-full max-w-[10px] ${
+                b.alert ? "bg-orange-500 hud-bar-pulse" : "bg-orange-500/50"
               }`}
               style={{ height: `${Math.max(8, b.h)}%` }}
             />
-            <span className="truncate font-mono text-[7px] text-slate-600">
+            <span className="truncate font-mono text-[7px] text-neutral-600">
               {b.label}
             </span>
           </div>

@@ -4,27 +4,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV = [
-  { href: "/dashboard", label: "Command", short: "⌂" },
-  { href: "/radar", label: "Radar 3D", short: "◎" },
+  { href: "/dashboard", label: "HUD", short: "⌂" },
+  { href: "/radar", label: "3D", short: "◎" },
   { href: "/warehouses", label: "Sites", short: "▣" },
-  { href: "/alerts", label: "Alertes", short: "!" },
-  { href: "/products", label: "Stock", short: "◫" },
+  { href: "/alerts", label: "!", short: "!" },
+  { href: "/products", label: "SKU", short: "◫" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="relative z-30 flex w-[72px] flex-col border-r border-cyan-500/15 bg-[#030712] lg:w-[88px]">
-      <div className="flex h-[57px] items-center justify-center border-b border-dashed border-cyan-500/20">
-        <span
-          className="font-mono text-sm font-black tracking-tighter text-cyan-400"
-          title="Supply Chain Radar"
-        >
-          SCR
-        </span>
+    <aside className="z-40 flex w-[72px] shrink-0 flex-col border-r border-orange-500/20 bg-black lg:w-[88px]">
+      <div className="flex h-12 shrink-0 items-center justify-center border-b border-orange-500/20">
+        <span className="font-mono text-xs font-black text-orange-500">SCR</span>
       </div>
-      <nav className="flex flex-1 flex-col gap-1 px-2 py-4">
+      <nav className="flex flex-1 flex-col gap-1 p-2">
         {NAV.map((item) => {
           const active =
             pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -33,23 +28,18 @@ export default function Sidebar() {
               key={item.href}
               href={item.href}
               title={item.label}
-              className={`group relative flex flex-col items-center gap-1 rounded border py-3 text-center transition-all duration-300 ${
+              className={`flex flex-col items-center rounded border py-2.5 font-mono transition-colors ${
                 active
-                  ? "border-cyan-500/50 bg-cyan-500/15 text-cyan-300 shadow-[0_0_20px_rgba(34,211,238,0.15)]"
-                  : "border-transparent text-slate-600 hover:border-cyan-500/20 hover:bg-cyan-500/5 hover:text-cyan-400/80"
+                  ? "border-orange-500/40 bg-orange-500/15 text-orange-500 shadow-[0_0_16px_rgba(249,115,22,0.12)]"
+                  : "border-transparent text-neutral-600 hover:border-orange-500/20 hover:text-neutral-400"
               }`}
             >
-              <span className="font-mono text-sm font-bold">{item.short}</span>
-              <span className="max-w-full truncate px-1 font-mono text-[8px] uppercase tracking-wider">
-                {item.label}
-              </span>
+              <span className="text-sm font-bold">{item.short}</span>
+              <span className="text-[8px] uppercase">{item.label}</span>
             </Link>
           );
         })}
       </nav>
-      <div className="border-t border-dashed border-cyan-500/20 p-3 text-center">
-        <p className="font-mono text-[8px] leading-tight text-slate-700">HUD v2</p>
-      </div>
     </aside>
   );
 }

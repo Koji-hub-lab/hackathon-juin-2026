@@ -2,8 +2,6 @@
 
 import Badge from "@/components/ui/Badge";
 
-const ICONS = { danger: "●", warning: "●", info: "●" };
-const DOT = { danger: "text-rose-500", warning: "text-amber-400", info: "text-orange-400/80" };
 const LABELS = { danger: "Critique", warning: "Watch", info: "Info" };
 
 function formatDate(value) {
@@ -21,20 +19,13 @@ function formatDate(value) {
 export default function AlertCard({ alert }) {
   const level = alert.level || "info";
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4 transition-colors hover:border-orange-500/25 hover:bg-orange-500/[0.04]">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-start gap-2.5 min-w-0">
-          <span className={`mt-1 text-lg leading-none ${DOT[level] || DOT.info}`}>
-            {ICONS[level] || "●"}
-          </span>
-          <div className="min-w-0">
-            <p className="text-sm font-medium leading-snug text-white">
-              {alert.message}
-            </p>
-            <p className="mt-1.5 font-mono text-[10px] uppercase tracking-wider text-neutral-600">
-              {alert.type} · #{alert.warehouseId} · {formatDate(alert.createdAt)}
-            </p>
-          </div>
+    <div className="rounded border border-orange-500/20 bg-black/40 p-3 transition-colors hover:border-orange-500/35">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="text-sm leading-snug text-neutral-200">{alert.message}</p>
+          <p className="mt-1 font-mono text-[10px] text-neutral-500">
+            {alert.type} · #{alert.warehouseId} · {formatDate(alert.createdAt)}
+          </p>
         </div>
         <Badge variant={level}>{LABELS[level] || level}</Badge>
       </div>

@@ -23,12 +23,12 @@ export default function RootLayout({ children }) {
     <html lang="fr" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body
         suppressHydrationWarning
-        className="flex min-h-screen bg-[#030712] text-slate-100 antialiased"
+        className="flex h-screen overflow-hidden bg-black text-neutral-100 antialiased"
       >
         <Sidebar />
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
           <Navbar />
-          <main className="flex-1 overflow-y-auto p-6">{children}</main>
+          <main className="min-h-0 flex-1 overflow-hidden p-6">{children}</main>
         </div>
       </body>
     </html>

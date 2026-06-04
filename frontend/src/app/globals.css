@@ -1,10 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --bg-deep: #030712;
-  --bg-anthracite: #0c0c0e;
-  --cyan-electric: #22d3ee;
-  --orange-electric: #ff5c00;
+  --bg-deep: #000000;
+  --bg-anthracite: #0a0a0a;
+  --orange-electric: #f97316;
   --orange-bright: #ff7a1a;
   --orange-glow: rgba(255, 92, 0, 0.45);
   --foreground: #e2e8f0;
@@ -78,7 +77,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--cyan-electric);
+  background: var(--orange-electric);
 }
 
 /* ——— Military HUD ——— */
@@ -96,7 +95,7 @@ body {
   background: conic-gradient(
     from 0deg at 50% 50%,
     transparent 0deg,
-    rgba(34, 211, 238, 0.35) 28deg,
+    rgba(249, 115, 22, 0.4) 28deg,
     transparent 56deg
   );
   animation: hud-radar-spin 5s linear infinite;

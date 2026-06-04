@@ -11,64 +11,46 @@ export default function CentralPowerUnit({ predictions = [], dangerCount = 0 }) 
         )
       : 87;
 
-  const readiness = Math.max(
-    0,
-    Math.min(100, avgConfidence - dangerCount * 8)
-  );
-
+  const readiness = Math.max(0, Math.min(100, avgConfidence - dangerCount * 8));
   const status =
     dangerCount >= 2 ? "DEGRADED" : dangerCount >= 1 ? "CAUTION" : "OPTIMAL";
-  const statusColor =
-    status === "OPTIMAL"
-      ? "text-cyan-400"
-      : status === "CAUTION"
-        ? "text-amber-400"
-        : "text-orange-500";
 
   return (
-    <HudPanel sector="Central Power Unit" title="IA Core" accent="orange">
-      <div className="space-y-4">
+    <HudPanel sector="Central Power" title="IA Core" className="h-full">
+      <div className="flex h-full flex-col justify-between gap-3">
         <div>
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-slate-600">
+          <p className="font-mono text-[9px] uppercase tracking-widest text-neutral-500">
             Engine
           </p>
-          <p className="mt-1 font-mono text-sm font-bold text-orange-400">
+          <p className="font-mono text-xs font-bold text-orange-500">
             GEMINI 1.5 FLASH
           </p>
         </div>
 
-        <div className="border border-dashed border-orange-500/25 bg-orange-500/5 p-3">
-          <p className="font-mono text-[9px] text-slate-500">IA STATUS</p>
-          <p className={`mt-1 font-mono text-xl font-black tracking-widest ${statusColor}`}>
+        <div className="border border-orange-500/25 bg-orange-500/5 p-2">
+          <p className="font-mono text-[9px] text-neutral-500">IA STATUS</p>
+          <p className="font-mono text-lg font-black tracking-wider text-neutral-100">
             {status}
           </p>
         </div>
 
         <div>
           <div className="flex justify-between font-mono text-[10px]">
-            <span className="text-slate-500">DECISION READINESS</span>
-            <span className="tabular-nums text-orange-400">{readiness}%</span>
+            <span className="text-neutral-500">READINESS</span>
+            <span className="tabular-nums text-orange-500">{readiness}%</span>
           </div>
-          <div className="mt-2 h-1.5 overflow-hidden bg-slate-900">
+          <div className="mt-1.5 h-1 overflow-hidden bg-neutral-900">
             <div
-              className="h-full bg-gradient-to-r from-orange-600 to-amber-400 transition-all duration-700"
+              className="h-full bg-orange-500"
               style={{ width: `${readiness}%` }}
             />
           </div>
         </div>
 
-        <ul className="space-y-1.5 font-mono text-[9px] text-slate-500">
-          <li>
-            <span className="text-cyan-500/80">▸</span> Inférence rupture stock
-          </li>
-          <li>
-            <span className="text-cyan-500/80">▸</span> Latence &lt; 120ms
-          </li>
-          <li>
-            <span className="text-orange-500/80">▸</span> Signaux critiques:{" "}
-            <span className="text-orange-400">{dangerCount}</span>
-          </li>
-        </ul>
+        <p className="font-mono text-[9px] text-neutral-500">
+          Signaux critiques:{" "}
+          <span className="text-orange-500">{dangerCount}</span>
+        </p>
       </div>
     </HudPanel>
   );
