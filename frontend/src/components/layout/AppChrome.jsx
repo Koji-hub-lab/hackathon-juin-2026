@@ -12,7 +12,9 @@ export default function AppChrome({ children }) {
 
   if (immersive) {
     return (
-      <div className="h-screen w-full overflow-hidden bg-[#030712]">{children}</div>
+      <div className="min-h-screen w-full overflow-x-hidden overflow-y-auto bg-[#030712]">
+        {children}
+      </div>
     );
   }
 

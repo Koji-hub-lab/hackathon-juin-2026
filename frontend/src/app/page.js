@@ -1,8 +1,9 @@
 import CommandCenter from "@/components/command/CommandCenter";
 
 export const metadata = {
-  title: "Supply Chain Command Center",
-  description: "Centre de commandement logistique temps réel — radar 3D",
+  title: "Supply Chain Radar — Pilotage logistique IA",
+  description:
+    "Plateforme SaaS de supervision multi-entrepôts, radar 3D, alertes temps réel et prédiction de rupture de stock.",
 };
 
 export default function HomePage() {
