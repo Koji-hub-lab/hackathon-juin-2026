@@ -1,14 +1,45 @@
 "use client";
 
-export default function StockCard({ title, value, subtitle, icon, accent = "text-blue-400" }) {
+import CyberPanel from "@/components/cyber/CyberPanel";
+
+const GLOW_MAP = {
+  "text-green-400": "emerald",
+  "text-red-400": "red",
+  "text-blue-400": "cyan",
+  "text-cyan-400": "cyan",
+};
+
+export default function StockCard({
+  title,
+  value,
+  subtitle,
+  icon,
+  accent = "text-cyan-400",
+}) {
+  const glow = GLOW_MAP[accent] || "cyan";
+
   return (
-    <div className="rounded-xl border border-gray-800 bg-gray-900 p-4">
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-gray-400">{title}</p>
-        {icon && <span className="text-xl">{icon}</span>}
+    <CyberPanel className="p-5" glow={glow}>
+      <div className="flex items-start justify-between gap-2">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">
+          {title}
+        </p>
+        {icon && (
+          <span className="text-lg opacity-80" aria-hidden>
+            {icon}
+          </span>
+        )}
       </div>
-      <p className={`mt-2 text-3xl font-bold ${accent}`}>{value}</p>
-      {subtitle && <p className="mt-1 text-xs text-gray-500">{subtitle}</p>}
-    </div>
+      <p
+        className={`mt-3 font-mono text-4xl font-bold tabular-nums tracking-tight ${accent} drop-shadow-[0_0_12px_rgba(34,211,238,0.15)]`}
+      >
+        {value}
+      </p>
+      {subtitle && (
+        <p className="mt-2 font-mono text-[10px] uppercase tracking-wider text-slate-600">
+          {subtitle}
+        </p>
+      )}
+    </CyberPanel>
   );
 }

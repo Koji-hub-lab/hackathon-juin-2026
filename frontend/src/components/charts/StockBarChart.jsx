@@ -12,6 +12,7 @@ import {
 } from "recharts";
 
 import { useMounted } from "@/hooks/useMounted";
+import CyberPanel from "@/components/cyber/CyberPanel";
 
 // Stock vs capacité par entrepôt.
 export default function StockBarChart({ warehouses = [] }) {
@@ -23,9 +24,9 @@ export default function StockBarChart({ warehouses = [] }) {
   }));
 
   return (
-    <div className="rounded-xl border border-gray-800 bg-gray-900 p-4">
-      <h2 className="mb-4 text-lg font-bold text-blue-400">
-        📦 Stock par entrepôt
+    <CyberPanel className="p-5">
+      <h2 className="mb-4 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text font-mono text-sm font-bold uppercase tracking-wider text-transparent">
+        Stock par entrepôt
       </h2>
       <div className="h-72 w-full">
         {/* Rendu différé au client : évite le warning Recharts (taille 0 au SSR). */}
@@ -50,6 +51,6 @@ export default function StockBarChart({ warehouses = [] }) {
           </ResponsiveContainer>
         )}
       </div>
-    </div>
+    </CyberPanel>
   );
 }

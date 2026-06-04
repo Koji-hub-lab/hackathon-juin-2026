@@ -1,22 +1,24 @@
 "use client";
 
-export default function Navbar({ connected }) {
+import ConnectionBadge from "@/components/cyber/ConnectionBadge";
+import { useSocket } from "@/hooks/useSocket";
+
+export default function Navbar() {
+  const { connected } = useSocket();
+
   return (
-    <header className="flex items-center justify-between border-b border-gray-800 bg-gray-900 px-6 py-3">
-      <h1 className="text-base font-semibold text-white">
-        Superviseur Multi-entrepôts
-      </h1>
+    <header className="flex items-center justify-between border-b border-slate-800/90 bg-slate-950/70 px-6 py-3.5 backdrop-blur-xl">
+      <div>
+        <h1 className="text-base font-semibold tracking-tight text-slate-100">
+          Superviseur Multi-entrepôts
+        </h1>
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-600">
+          Supply Chain Cyber Command
+        </p>
+      </div>
       <div className="flex items-center gap-4">
-        {typeof connected === "boolean" && (
-          <span
-            className={`rounded-full px-2.5 py-1 text-xs font-bold ${
-              connected ? "bg-green-500/20 text-green-300" : "bg-gray-700 text-gray-400"
-            }`}
-          >
-            {connected ? "🟢 Temps réel actif" : "⚪ Déconnecté"}
-          </span>
-        )}
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500/30 text-xs font-bold text-blue-200">
+        <ConnectionBadge connected={connected} />
+        <div className="flex h-9 w-9 items-center justify-center rounded-full border border-cyan-500/30 bg-gradient-to-br from-cyan-500/20 to-emerald-500/10 font-mono text-xs font-bold text-cyan-200 shadow-[0_0_16px_rgba(34,211,238,0.15)]">
           MO
         </div>
       </div>

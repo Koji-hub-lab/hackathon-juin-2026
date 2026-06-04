@@ -11,6 +11,7 @@ import {
 } from "recharts";
 
 import { useMounted } from "@/hooks/useMounted";
+import CyberPanel from "@/components/cyber/CyberPanel";
 
 // Taux de remplissage projeté par entrepôt (à partir des prédictions IA).
 export default function TrendLineChart({ predictions = [] }) {
@@ -22,9 +23,9 @@ export default function TrendLineChart({ predictions = [] }) {
   }));
 
   return (
-    <div className="rounded-xl border border-gray-800 bg-gray-900 p-4">
-      <h2 className="mb-4 text-lg font-bold text-blue-400">
-        📈 Tendance de remplissage
+    <CyberPanel className="p-5">
+      <h2 className="mb-4 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text font-mono text-sm font-bold uppercase tracking-wider text-transparent">
+        Tendance de remplissage
       </h2>
       <div className="h-72 w-full">
         {/* Rendu différé au client : évite le warning Recharts (taille 0 au SSR). */}
@@ -60,6 +61,6 @@ export default function TrendLineChart({ predictions = [] }) {
           </ResponsiveContainer>
         )}
       </div>
-    </div>
+    </CyberPanel>
   );
 }
