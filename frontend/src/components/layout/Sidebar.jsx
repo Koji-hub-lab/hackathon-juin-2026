@@ -15,10 +15,10 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="relative z-30 flex w-[72px] flex-col border-r border-white/[0.06] bg-[#050505] lg:w-[88px]">
-      <div className="flex h-[57px] items-center justify-center border-b border-white/[0.06]">
+    <aside className="relative z-30 flex w-[72px] flex-col border-r border-cyan-500/15 bg-[#030712] lg:w-[88px]">
+      <div className="flex h-[57px] items-center justify-center border-b border-dashed border-cyan-500/20">
         <span
-          className="text-lg font-black text-[#ff5c00]"
+          className="font-mono text-sm font-black tracking-tighter text-cyan-400"
           title="Supply Chain Radar"
         >
           SCR
@@ -33,33 +33,22 @@ export default function Sidebar() {
               key={item.href}
               href={item.href}
               title={item.label}
-              className={`group relative flex flex-col items-center gap-1 rounded-xl py-3 text-center transition-all duration-300 ${
+              className={`group relative flex flex-col items-center gap-1 rounded border py-3 text-center transition-all duration-300 ${
                 active
-                  ? "bg-[#ff5c00] text-black glow-orange"
-                  : "text-neutral-500 hover:bg-white/[0.04] hover:text-white"
+                  ? "border-cyan-500/50 bg-cyan-500/15 text-cyan-300 shadow-[0_0_20px_rgba(34,211,238,0.15)]"
+                  : "border-transparent text-slate-600 hover:border-cyan-500/20 hover:bg-cyan-500/5 hover:text-cyan-400/80"
               }`}
             >
               <span className="font-mono text-sm font-bold">{item.short}</span>
-              <span
-                className={`max-w-full truncate px-1 font-mono text-[8px] uppercase tracking-wider ${
-                  active ? "text-black/70" : "text-neutral-600"
-                }`}
-              >
+              <span className="max-w-full truncate px-1 font-mono text-[8px] uppercase tracking-wider">
                 {item.label}
               </span>
-              {active && (
-                <span className="absolute -left-2 top-1/2 h-8 w-0.5 -translate-y-1/2 rounded-full bg-[#ff5c00]" />
-              )}
             </Link>
           );
         })}
       </nav>
-      <div className="border-t border-white/[0.06] p-3 text-center">
-        <p className="font-mono text-[8px] leading-tight text-neutral-700">
-          J.U.I.N
-          <br />
-          2026
-        </p>
+      <div className="border-t border-dashed border-cyan-500/20 p-3 text-center">
+        <p className="font-mono text-[8px] leading-tight text-slate-700">HUD v2</p>
       </div>
     </aside>
   );

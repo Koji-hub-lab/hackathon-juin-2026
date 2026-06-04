@@ -1,13 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --bg-deep: #050505;
+  --bg-deep: #030712;
   --bg-anthracite: #0c0c0e;
+  --cyan-electric: #22d3ee;
   --orange-electric: #ff5c00;
   --orange-bright: #ff7a1a;
   --orange-glow: rgba(255, 92, 0, 0.45);
-  --foreground: #fafafa;
-  --muted: #737373;
+  --foreground: #e2e8f0;
+  --muted: #64748b;
   --line: rgba(255, 255, 255, 0.06);
 }
 
@@ -77,5 +78,64 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--orange-electric);
+  background: var(--cyan-electric);
+}
+
+/* ——— Military HUD ——— */
+.hud-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.4) 2px,
+    rgba(0, 0, 0, 0.4) 4px
+  );
+}
+
+.hud-radar-sweep {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    rgba(34, 211, 238, 0.35) 28deg,
+    transparent 56deg
+  );
+  animation: hud-radar-spin 5s linear infinite;
+  mask-image: radial-gradient(circle, black 20%, transparent 70%);
+  -webkit-mask-image: radial-gradient(circle, black 20%, transparent 70%);
+}
+
+@keyframes hud-radar-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.hud-node-alert {
+  animation: hud-blink 1.2s ease-in-out infinite;
+}
+
+.hud-bar-pulse {
+  animation: hud-blink 1.5s ease-in-out infinite;
+}
+
+@keyframes hud-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.hud-wave-dash {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: hud-wave-draw 4s linear infinite;
+}
+
+@keyframes hud-wave-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
 }

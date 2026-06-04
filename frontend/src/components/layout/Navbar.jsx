@@ -10,24 +10,17 @@ export default function Navbar() {
   const onDashboard = pathname === "/dashboard" || pathname.startsWith("/dashboard/");
 
   if (onDashboard) {
-    return (
-      <header className="flex h-[57px] items-center justify-end gap-4 border-b border-white/[0.06] bg-[#050505]/90 px-6 backdrop-blur-md">
-        <ConnectionBadge connected={connected} />
-        <div className="flex h-9 w-9 items-center justify-center rounded-full border border-orange-500/40 bg-orange-500/10 font-mono text-xs font-bold text-orange-400">
-          MO
-        </div>
-      </header>
-    );
+    return null;
   }
 
   return (
-    <header className="flex h-[57px] items-center justify-between border-b border-white/[0.06] bg-[#050505]/90 px-6 backdrop-blur-md">
-      <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-neutral-500">
+    <header className="flex h-[57px] items-center justify-between border-b border-cyan-500/15 bg-[#030712]/95 px-6 backdrop-blur-md">
+      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-cyan-500/70">
         Supply Chain Radar
       </p>
       <div className="flex items-center gap-4">
         <ConnectionBadge connected={connected} />
-        <div className="flex h-9 w-9 items-center justify-center rounded-full border border-orange-500/40 bg-orange-500/10 font-mono text-xs font-bold text-orange-400">
+        <div className="flex h-8 w-8 items-center justify-center rounded border border-cyan-500/30 font-mono text-[10px] font-bold text-cyan-400">
           MO
         </div>
       </div>

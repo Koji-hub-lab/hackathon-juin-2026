@@ -1,5 +1,5 @@
-import CommandDashboard from "@/components/dashboard/CommandDashboard";
+import MilitaryCommandDashboard from "@/components/dashboard/MilitaryCommandDashboard";
 
 export default function DashboardPage() {
-  return <CommandDashboard />;
+  return <MilitaryCommandDashboard />;
 }

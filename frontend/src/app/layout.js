@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
     <html lang="fr" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body
         suppressHydrationWarning
-        className="flex min-h-screen bg-[#050505] text-white antialiased"
+        className="flex min-h-screen bg-[#030712] text-slate-100 antialiased"
       >
         <Sidebar />
         <div className="flex min-w-0 flex-1 flex-col">
