@@ -6,9 +6,9 @@ import { Edges, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 
 const COLORS = {
-  healthy: "#34d3ff",
+  healthy: "#ff7a1a",
   warning: "#fbbf24",
-  danger: "#ff3366",
+  danger: "#ff2244",
 };
 
 const GRID_W = 10;
@@ -121,9 +121,9 @@ function CubeGridScene({ cubes, dispersion }) {
   return (
     <group ref={groupRef}>
       <ambientLight intensity={0.55} />
-      <pointLight position={[6, 8, 4]} intensity={0.8} color="#34d3ff" />
-      <pointLight position={[-5, 4, -6]} intensity={0.4} color="#39ff14" />
-      <fog attach="fog" args={["#0b0f19", 14, 28]} />
+      <pointLight position={[6, 8, 4]} intensity={0.9} color="#ff5c00" />
+      <pointLight position={[-5, 4, -6]} intensity={0.35} color="#ffaa66" />
+      <fog attach="fog" args={["#050505", 14, 28]} />
 
       {/* Sol grille */}
       <gridHelper
@@ -210,7 +210,7 @@ export default function CubeGrid3D({ warehouses = [], alerts = [] }) {
   }, []);
 
   return (
-    <div className="relative h-[360px] w-full">
+    <div className="relative h-[420px] w-full">
       {mounted ? (
         <CubeGridErrorBoundary>
           <Canvas
@@ -224,19 +224,19 @@ export default function CubeGrid3D({ warehouses = [], alerts = [] }) {
         </CubeGridErrorBoundary>
       ) : (
         <div className="flex h-full items-center justify-center">
-          <span className="animate-pulse font-mono text-xs tracking-[0.3em] text-cyan-400/80">
-            INITIALISATION GRILLE 3D…
+          <span className="animate-pulse font-mono text-xs uppercase tracking-[0.35em] text-orange-500/80">
+            Initialisation grille 3D…
           </span>
         </div>
       )}
 
-      <div className="pointer-events-none absolute bottom-3 left-4 flex flex-wrap gap-3 font-mono text-[10px] uppercase tracking-widest text-slate-500">
-        <span className="text-cyan-400/90">● Stock sain</span>
-        <span className="text-amber-400/90">● Surveillance</span>
-        <span className="text-rose-400/90">● Critique ({dangerCount})</span>
+      <div className="pointer-events-none absolute bottom-4 left-6 flex flex-wrap gap-4 font-mono text-[10px] uppercase tracking-widest text-neutral-600">
+        <span className="text-orange-400">● Sain</span>
+        <span className="text-amber-400">● Watch</span>
+        <span className="text-rose-400">● Critique ({dangerCount})</span>
       </div>
-      <div className="pointer-events-none absolute bottom-3 right-4 font-mono text-[10px] tracking-widest text-slate-600">
-        SCROLL → DISPERSION ALERTES
+      <div className="pointer-events-none absolute bottom-4 right-6 font-mono text-[10px] uppercase tracking-widest text-neutral-700">
+        Scroll → dispersion
       </div>
     </div>
   );

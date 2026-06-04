@@ -11,56 +11,57 @@ import {
 } from "recharts";
 
 import { useMounted } from "@/hooks/useMounted";
-import CyberPanel from "@/components/cyber/CyberPanel";
 
-// Taux de remplissage projeté par entrepôt (à partir des prédictions IA).
 export default function TrendLineChart({ predictions = [] }) {
   const mounted = useMounted();
   const data = predictions.map((p) => ({
-    name: p.warehouseName,
+    name: p.warehouseName?.split(" ")[0] ?? p.warehouseName,
     "Remplissage %": p.fillPercent,
-    "Jours avant rupture": p.daysUntilRupture,
+    "Jours rupture": p.daysUntilRupture,
   }));
 
   return (
-    <CyberPanel className="p-5">
-      <h2 className="mb-4 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text font-mono text-sm font-bold uppercase tracking-wider text-transparent">
-        Tendance de remplissage
+    <div className="p-6 md:p-8">
+      <h2 className="font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-orange-500">
+        Tendance IA
       </h2>
-      <div className="h-72 w-full">
-        {/* Rendu différé au client : évite le warning Recharts (taille 0 au SSR). */}
+      <p className="mt-1 text-2xl font-black tracking-tight text-white">
+        Remplissage & horizon
+      </p>
+      <div className="mt-6 h-72 w-full">
         {mounted && (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
-              <XAxis dataKey="name" stroke="#9ca3af" fontSize={12} />
-              <YAxis stroke="#9ca3af" fontSize={12} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+              <XAxis dataKey="name" stroke="#525252" fontSize={11} tickLine={false} />
+              <YAxis stroke="#525252" fontSize={11} tickLine={false} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#111827",
-                  border: "1px solid #374151",
-                  borderRadius: 8,
-                  color: "#f3f4f6",
+                  backgroundColor: "#0a0a0a",
+                  border: "1px solid rgba(255,92,0,0.3)",
+                  borderRadius: 12,
+                  color: "#fafafa",
                 }}
               />
               <Line
                 type="monotone"
                 dataKey="Remplissage %"
-                stroke="#60a5fa"
+                stroke="#ff5c00"
                 strokeWidth={2}
-                dot={{ r: 4 }}
+                dot={{ r: 3, fill: "#ff5c00" }}
               />
               <Line
                 type="monotone"
-                dataKey="Jours avant rupture"
-                stroke="#f59e0b"
+                dataKey="Jours rupture"
+                stroke="#737373"
                 strokeWidth={2}
-                dot={{ r: 4 }}
+                strokeDasharray="4 4"
+                dot={{ r: 3 }}
               />
             </LineChart>
           </ResponsiveContainer>
         )}
       </div>
-    </CyberPanel>
+    </div>
   );
 }

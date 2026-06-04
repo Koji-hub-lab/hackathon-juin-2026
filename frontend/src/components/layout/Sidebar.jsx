@@ -4,25 +4,27 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV = [
-  { href: "/dashboard", label: "Dashboard", icon: "📊" },
-  { href: "/radar", label: "Radar 3D", icon: "📡" },
-  { href: "/warehouses", label: "Entrepôts", icon: "🏭" },
-  { href: "/alerts", label: "Alertes", icon: "🚨" },
-  { href: "/products", label: "Produits", icon: "📦" },
+  { href: "/dashboard", label: "Command", short: "⌂" },
+  { href: "/radar", label: "Radar 3D", short: "◎" },
+  { href: "/warehouses", label: "Sites", short: "▣" },
+  { href: "/alerts", label: "Alertes", short: "!" },
+  { href: "/products", label: "Stock", short: "◫" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex w-60 flex-col border-r border-slate-800/90 bg-slate-950/80 backdrop-blur-xl">
-      <div className="border-b border-slate-800/80 px-5 py-6">
-        <p className="text-lg font-bold tracking-tight text-white">📡 Supply Chain</p>
-        <p className="mt-0.5 bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text font-mono text-xs font-semibold uppercase tracking-[0.25em] text-transparent">
-          Radar
-        </p>
+    <aside className="relative z-30 flex w-[72px] flex-col border-r border-white/[0.06] bg-[#050505] lg:w-[88px]">
+      <div className="flex h-[57px] items-center justify-center border-b border-white/[0.06]">
+        <span
+          className="text-lg font-black text-[#ff5c00]"
+          title="Supply Chain Radar"
+        >
+          SCR
+        </span>
       </div>
-      <nav className="flex-1 space-y-0.5 px-3 py-4">
+      <nav className="flex flex-1 flex-col gap-1 px-2 py-4">
         {NAV.map((item) => {
           const active =
             pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -30,23 +32,34 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
+              title={item.label}
+              className={`group relative flex flex-col items-center gap-1 rounded-xl py-3 text-center transition-all duration-300 ${
                 active
-                  ? "border border-cyan-500/25 bg-cyan-500/10 text-cyan-200 shadow-[inset_0_0_20px_rgba(34,211,238,0.08)]"
-                  : "border border-transparent text-slate-400 hover:border-slate-700/50 hover:bg-slate-800/40 hover:text-slate-100"
+                  ? "bg-[#ff5c00] text-black glow-orange"
+                  : "text-neutral-500 hover:bg-white/[0.04] hover:text-white"
               }`}
             >
-              <span className="text-base">{item.icon}</span>
-              {item.label}
+              <span className="font-mono text-sm font-bold">{item.short}</span>
+              <span
+                className={`max-w-full truncate px-1 font-mono text-[8px] uppercase tracking-wider ${
+                  active ? "text-black/70" : "text-neutral-600"
+                }`}
+              >
+                {item.label}
+              </span>
+              {active && (
+                <span className="absolute -left-2 top-1/2 h-8 w-0.5 -translate-y-1/2 rounded-full bg-[#ff5c00]" />
+              )}
             </Link>
           );
         })}
       </nav>
-      <div className="border-t border-slate-800/80 px-5 py-4">
-        <p className="font-mono text-[10px] uppercase tracking-wider text-slate-600">
-          Hackathon J.U.I.N 2026
+      <div className="border-t border-white/[0.06] p-3 text-center">
+        <p className="font-mono text-[8px] leading-tight text-neutral-700">
+          J.U.I.N
+          <br />
+          2026
         </p>
-        <p className="font-mono text-[10px] text-slate-700">Thème 10</p>
       </div>
     </aside>
   );
