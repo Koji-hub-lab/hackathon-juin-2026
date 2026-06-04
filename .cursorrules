@@ -1,0 +1,20 @@
+Tu travailles sur Supply Chain Radar, un dashboard logistique.
+
+Stack Backend  : Spring Boot 3, Java 17, Lombok, Swagger (springdoc), WebSocket STOMP.
+Stack Frontend : Next.js (App Router), JavaScript (pas TypeScript), Tailwind CSS, Recharts, Axios, SockJS + StompJS.
+Pas d'authentification. Pas de base de données externe. Données dans mock.json (src/main/resources).
+
+Conventions Backend :
+- Annotations Lombok : @Data @NoArgsConstructor @AllArgsConstructor @RequiredArgsConstructor
+- Documenter chaque endpoint avec @Operation(summary = "...") et @Tag(name = "...")
+- Réponses d'erreur : Map.of("error", "message") avec le bon code HTTP
+- Package racine : com.supplychain
+
+Conventions Frontend :
+- Composants React en arrow functions exportées par défaut
+- Directive 'use client' en tête de chaque composant utilisant des hooks
+- Tailwind uniquement pour le styling (pas de CSS inline)
+- Dark theme : bg-gray-950 / bg-gray-900 / bg-gray-800, accent bleu-400
+- Noms fichiers : PascalCase pour composants, camelCase pour services/utils
+
+Toujours répondre en français.
