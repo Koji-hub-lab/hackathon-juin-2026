@@ -45,7 +45,7 @@ export default function CommandCenter() {
   const dangerCount = alerts.filter((a) => a.level === "danger").length;
 
   return (
-    <div className="scroll-smooth w-full overflow-x-hidden bg-[#030712] text-white">
+    <div className="w-full bg-[#030712] text-white">
       <HeroSection warehouses={warehouses} products={products} alerts={alerts} />
 
       <SectionDivider />

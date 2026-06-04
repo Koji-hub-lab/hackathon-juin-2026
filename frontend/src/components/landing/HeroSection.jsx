@@ -1,70 +1,15 @@
 "use client";
 
-import { Component, useEffect, useState } from "react";
 import Link from "next/link";
-import { Canvas } from "@react-three/fiber";
 import { motion } from "framer-motion";
 import ImmersiveBackground from "@/components/command/ImmersiveBackground";
 import AnimatedTitle from "@/components/command/AnimatedTitle";
-import { MissionRadarScene } from "@/components/command/MissionRadarScene";
 import LandingNav from "./LandingNav";
-
-class CanvasErrorBoundary extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="flex h-full items-center justify-center">
-          <span className="font-mono text-sm text-red-400">Radar 3D indisponible</span>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
-
-function HeroRadar({ warehouses, products, alerts }) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    const id = requestAnimationFrame(() => setMounted(true));
-    return () => cancelAnimationFrame(id);
-  }, []);
-
-  if (!mounted) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <span className="animate-pulse font-mono text-xs tracking-[0.25em] text-cyan-400/70">
-          Chargement du radar…
-        </span>
-      </div>
-    );
-  }
-
-  return (
-    <CanvasErrorBoundary>
-      <Canvas
-        className="h-full w-full"
-        camera={{ position: [0, 5.5, 10], fov: 48 }}
-        dpr={[1, 2]}
-        gl={{ antialias: true, powerPreference: "high-performance" }}
-      >
-        <MissionRadarScene warehouses={warehouses} products={products} alerts={alerts} />
-      </Canvas>
-    </CanvasErrorBoundary>
-  );
-}
+import HeroRadarCanvas from "./HeroRadarCanvas";
 
 export default function HeroSection({ warehouses, products, alerts }) {
   return (
-    <section className="relative flex min-h-screen w-full flex-col overflow-hidden bg-[#030712]">
+    <section className="relative flex min-h-[calc(100vh-3.5rem)] w-full flex-col overflow-hidden bg-[#030712]">
       <LandingNav />
       <ImmersiveBackground scrollY={0} />
 
@@ -76,7 +21,7 @@ export default function HeroSection({ warehouses, products, alerts }) {
         }}
       />
 
-      <div className="relative z-10 flex shrink-0 flex-col items-center px-6 pt-24 text-center sm:pt-28">
+      <div className="relative z-10 flex shrink-0 flex-col items-center px-6 pt-10 text-center sm:pt-12">
         <motion.span
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -115,7 +60,11 @@ export default function HeroSection({ warehouses, products, alerts }) {
         transition={{ delay: 0.5, duration: 0.8 }}
         className="relative z-0 mx-auto mt-2 h-[min(52vh,520px)] w-full max-w-5xl flex-1 px-4 pb-8 sm:mt-4"
       >
-        <HeroRadar warehouses={warehouses} products={products} alerts={alerts} />
+        <HeroRadarCanvas
+          warehouses={warehouses}
+          products={products}
+          alerts={alerts}
+        />
       </motion.div>
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#030712] to-transparent" />

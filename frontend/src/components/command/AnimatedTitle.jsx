@@ -19,7 +19,6 @@ export default function AnimatedTitle() {
               hidden: { opacity: 0, y: 12, filter: "blur(8px)" },
               visible: { opacity: 1, y: 0, filter: "blur(0px)" },
             }}
-            transition={{ delay: i * 0.035, duration: 0.45, type: "spring", stiffness: 120 }}
             animate={{
               y: [0, -3, 0],
               textShadow: [
@@ -27,6 +26,14 @@ export default function AnimatedTitle() {
                 "0 0 32px rgba(34,211,238,0.65)",
                 "0 0 20px rgba(34,211,238,0.3)",
               ],
+            }}
+            transition={{
+              delay: i * 0.035,
+              duration: 0.45,
+              type: "spring",
+              stiffness: 120,
+              y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+              textShadow: { duration: 4, repeat: Infinity, ease: "easeInOut" },
             }}
             style={{
               color: char === " " ? "transparent" : "#f0f9ff",

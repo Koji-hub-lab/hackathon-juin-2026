@@ -8,8 +8,9 @@ export default function Navbar() {
   const pathname = usePathname();
   const isDashboard =
     pathname === "/dashboard" || pathname.startsWith("/dashboard/");
+  const isLanding = pathname === "/" || pathname === "/radar";
 
-  if (isDashboard) return null;
+  if (isDashboard || isLanding) return null;
 
   const { connected } = useSocket();
 
