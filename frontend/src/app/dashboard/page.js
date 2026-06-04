@@ -10,6 +10,7 @@ import AlertCard from "@/components/widgets/AlertCard";
 import IAPredictionWidget from "@/components/widgets/IAPredictionWidget";
 import StockBarChart from "@/components/charts/StockBarChart";
 import TrendLineChart from "@/components/charts/TrendLineChart";
+import RadarMini from "@/components/RadarMini";
 
 export default function DashboardPage() {
   const [warehouses, setWarehouses] = useState([]);
@@ -48,6 +49,8 @@ export default function DashboardPage() {
           {connected ? "🟢 Temps réel actif" : "⚪ Déconnecté"}
         </span>
       </div>
+
+      <RadarMini />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StockCard title="Entrepôts" value={warehouses.length} icon="🏭" />

@@ -242,7 +242,8 @@ function Particles({ count = 320 }) {
 
 // --- Scène (lit la progression de scroll et pilote la caméra) --------------
 
-function RadarScene({ progress, selected }) {
+/** Scène réutilisable (hero scroll ou widget dashboard). */
+export function RadarScene({ progress, selected }) {
   const radarRef = useRef();
 
   // Vecteurs précalculés / réutilisés (aucune allocation par frame).
@@ -296,7 +297,7 @@ function RadarScene({ progress, selected }) {
 
 // --- Garde-fou : Error Boundary (jamais de blocage silencieux) -------------
 
-class CanvasErrorBoundary extends Component {
+export class CanvasErrorBoundary extends Component {
   constructor(props) {
     super(props);
     this.state = { hasError: false };
