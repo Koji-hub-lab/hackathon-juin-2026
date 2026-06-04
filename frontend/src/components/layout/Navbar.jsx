@@ -14,8 +14,8 @@ export default function Navbar() {
   const { connected } = useSocket();
 
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between border-b border-slate-800/60 bg-[#080b11]/80 px-6 backdrop-blur-md">
-      <p className="text-sm font-medium text-slate-50">Supply Chain Radar</p>
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-slate-200/60 bg-white px-6 shadow-sm">
+      <p className="text-sm font-bold text-slate-900">Supply Chain Radar</p>
       <ConnectionBadge connected={connected} />
     </header>
   );

@@ -18,27 +18,27 @@ export default function InformationSector({ warehouses = [], connected }) {
       subtitle="Entrées vers les hubs nationaux"
       className="h-full"
     >
-      <div className="flex h-full flex-col gap-4">
+      <div className="flex h-full flex-col gap-5">
         <div className="flex items-end justify-between">
           <div>
-            <p className="text-xs text-slate-500">Volume entrant</p>
-            <p className="mt-1 font-sans text-2xl font-semibold tabular-nums tracking-tight text-slate-50">
+            <p className="text-sm text-slate-500">Volume entrant</p>
+            <p className="mt-1 text-3xl font-extrabold tabular-nums tracking-tight text-slate-900">
               {inbound}
-              <span className="ml-1 text-sm font-normal text-slate-500">
+              <span className="ml-1 text-base font-semibold text-slate-500">
                 t/sem
               </span>
             </p>
           </div>
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs ${
+            className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium ${
               connected
-                ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-400"
-                : "border-slate-700 bg-slate-800/50 text-slate-500"
+                ? "bg-blue-50 text-blue-700"
+                : "bg-slate-100 text-slate-500"
             }`}
           >
             <span
-              className={`h-1.5 w-1.5 rounded-full ${
-                connected ? "bg-emerald-400" : "bg-slate-600"
+              className={`h-2 w-2 rounded-full ${
+                connected ? "bg-blue-600" : "bg-slate-400"
               }`}
             />
             {connected ? "Connecté" : "Hors ligne"}
@@ -49,12 +49,12 @@ export default function InformationSector({ warehouses = [], connected }) {
           {CORRIDORS.map((c) => (
             <li
               key={c.route}
-              className="rounded-lg border border-slate-800/60 bg-slate-950/30 px-3 py-2.5"
+              className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-3"
             >
-              <p className="text-sm text-slate-200">{c.route}</p>
-              <p className="mt-0.5 text-xs text-slate-500">
+              <p className="text-sm font-medium text-slate-900">{c.route}</p>
+              <p className="mt-0.5 text-sm text-slate-500">
                 {c.flux} ·{" "}
-                <span className="tabular-nums text-slate-400">
+                <span className="font-medium text-slate-700">
                   {c.load} {c.unit}
                 </span>
               </p>

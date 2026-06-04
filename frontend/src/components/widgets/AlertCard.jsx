@@ -3,18 +3,15 @@
 const LEVEL = {
   danger: {
     label: "Critique",
-    dot: "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]",
-    text: "text-red-400",
+    badge: "bg-red-50 text-red-700",
   },
   warning: {
     label: "Attention",
-    dot: "bg-amber-400",
-    text: "text-amber-400/90",
+    badge: "bg-amber-50 text-amber-700",
   },
   info: {
     label: "Info",
-    dot: "bg-slate-500",
-    text: "text-slate-500",
+    badge: "bg-blue-50 text-blue-700",
   },
 };
 
@@ -35,20 +32,19 @@ export default function AlertCard({ alert }) {
   const meta = LEVEL[level] || LEVEL.info;
 
   return (
-    <div className="flex gap-3 rounded-lg border border-slate-800/60 bg-slate-950/20 px-4 py-3 transition-colors hover:border-slate-700/80">
-      <span
-        className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${meta.dot}`}
-        title={meta.label}
-        aria-hidden
-      />
+    <div className="flex items-start gap-4 rounded-xl bg-white px-2 py-3 transition-colors hover:bg-slate-50">
       <div className="min-w-0 flex-1">
-        <p className="text-sm leading-snug text-slate-200">{alert.message}</p>
+        <p className="text-sm font-medium leading-snug text-slate-900">
+          {alert.message}
+        </p>
         <p className="mt-1 text-xs text-slate-500">
           {alert.type} · Entrepôt #{alert.warehouseId} ·{" "}
           {formatDate(alert.createdAt)}
         </p>
       </div>
-      <span className={`shrink-0 text-[10px] font-medium ${meta.text}`}>
+      <span
+        className={`shrink-0 rounded-lg px-2.5 py-1 text-xs font-medium ${meta.badge}`}
+      >
         {meta.label}
       </span>
     </div>

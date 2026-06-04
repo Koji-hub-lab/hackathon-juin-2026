@@ -14,12 +14,6 @@ export default function CentralPowerUnit({ predictions = [], dangerCount = 0 }) 
   const readiness = Math.max(0, Math.min(100, avgConfidence - dangerCount * 8));
   const status =
     dangerCount >= 2 ? "Dégradé" : dangerCount >= 1 ? "Surveillance" : "Optimal";
-  const statusStyle =
-    dangerCount >= 2
-      ? "text-red-400"
-      : dangerCount >= 1
-        ? "text-amber-400"
-        : "text-emerald-400";
 
   return (
     <HudPanel
@@ -27,34 +21,34 @@ export default function CentralPowerUnit({ predictions = [], dangerCount = 0 }) 
       subtitle="Gemini 1.5 Flash · ruptures de stock"
       className="h-full"
     >
-      <div className="flex h-full flex-col justify-between gap-5">
-        <div>
-          <p className="text-xs text-slate-500">État du modèle</p>
-          <p className={`mt-1 text-lg font-medium ${statusStyle}`}>{status}</p>
+      <div className="flex h-full flex-col justify-between gap-6">
+        <div className="rounded-xl bg-blue-50 px-4 py-3">
+          <p className="text-sm text-slate-500">État du modèle</p>
+          <p className="mt-1 text-lg font-bold text-blue-700">{status}</p>
         </div>
 
         <div>
           <div className="flex items-baseline justify-between">
-            <span className="text-xs text-slate-500">Prêt à décider</span>
-            <span className="font-sans text-xl font-semibold tabular-nums tracking-tight text-slate-50">
+            <span className="text-sm text-slate-500">Prêt à décider</span>
+            <span className="text-3xl font-extrabold tabular-nums text-slate-900">
               {readiness}%
             </span>
           </div>
-          <div className="mt-3 h-1 overflow-hidden rounded-full bg-slate-800">
+          <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-slate-100">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-cyan-500/80 to-emerald-500/80 transition-all duration-500"
+              className="h-full rounded-full bg-blue-600 transition-all duration-500"
               style={{ width: `${readiness}%` }}
             />
           </div>
         </div>
 
-        <p className="text-xs text-slate-500">
-          Alertes critiques actives{" "}
+        <p className="text-sm text-slate-500">
+          Alertes critiques{" "}
           <span
             className={
               dangerCount > 0
-                ? "font-medium text-red-400"
-                : "text-slate-400"
+                ? "font-bold text-red-600"
+                : "font-semibold text-slate-700"
             }
           >
             {dangerCount}

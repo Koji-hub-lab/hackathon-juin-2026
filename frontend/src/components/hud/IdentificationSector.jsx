@@ -3,29 +3,65 @@
 import { useMemo } from "react";
 import HudPanel from "./HudPanel";
 
-function Waveform() {
+function TrafficChart({ bars }) {
   const path = useMemo(() => {
     const pts = [];
-    for (let x = 0; x <= 200; x += 4) {
-      const y = 30 + Math.sin(x * 0.08) * 18 + Math.sin(x * 0.02) * 8;
-      pts.push(`${x === 0 ? "M" : "L"} ${x} ${y}`);
+    const w = 200;
+    const h = 50;
+    for (let i = 0; i <= 20; i++) {
+      const x = (i / 20) * w;
+      const y = h - 8 - Math.sin(i * 0.55) * 14 - Math.cos(i * 0.2) * 6;
+      pts.push(`${i === 0 ? "M" : "L"} ${x} ${y}`);
+    }
+    return `${pts.join(" ")} L ${w} ${h} L 0 ${h} Z`;
+  }, []);
+
+  const linePath = useMemo(() => {
+    const pts = [];
+    for (let i = 0; i <= 20; i++) {
+      const x = (i / 20) * 200;
+      const y = 42 - Math.sin(i * 0.55) * 14 - Math.cos(i * 0.2) * 6;
+      pts.push(`${i === 0 ? "M" : "L"} ${x} ${y}`);
     }
     return pts.join(" ");
   }, []);
 
   return (
-    <svg
-      viewBox="0 0 200 60"
-      className="h-14 w-full shrink-0 opacity-80"
-      preserveAspectRatio="none"
-    >
-      <path
-        d={path}
-        fill="none"
-        stroke="rgba(34,211,238,0.35)"
-        strokeWidth="1"
-      />
-    </svg>
+    <div className="space-y-4">
+      <svg viewBox="0 0 200 50" className="h-24 w-full" preserveAspectRatio="none">
+        <path d={path} fill="rgba(37,99,235,0.12)" />
+        <path
+          d={linePath}
+          fill="none"
+          stroke="#2563eb"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+
+      <div className="flex h-28 items-end justify-between gap-2">
+        {bars.length === 0 &&
+          [40, 55, 48, 70, 62, 80, 58].map((h, i) => (
+            <div
+              key={i}
+              className="flex-1 rounded-lg bg-blue-200"
+              style={{ height: `${h}%` }}
+            />
+          ))}
+        {bars.map((b) => (
+          <div key={b.label} className="flex flex-1 flex-col items-center gap-2">
+            <div
+              className={`w-full max-w-[28px] rounded-lg ${
+                b.alert ? "bg-red-400" : "bg-blue-600"
+              }`}
+              style={{ height: `${Math.max(12, b.h)}%` }}
+            />
+            <span className="truncate text-xs text-slate-500">{b.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -34,7 +70,7 @@ export default function IdentificationSector({ products = [] }) {
     const cement = products.filter((p) =>
       /ciment|plâtre|gravier|fer/i.test(p.name || "")
     );
-    const list = cement.length ? cement : products.slice(0, 6);
+    const list = cement.length ? cement : products.slice(0, 7);
     const max = Math.max(...list.map((p) => p.quantity || 1), 1);
     return list.map((p) => ({
       label: (p.name || "").split(" ")[0],
@@ -45,34 +81,11 @@ export default function IdentificationSector({ products = [] }) {
 
   return (
     <HudPanel
-      title="Trafic matériaux"
-      subtitle="Ciment & BTP · flux horaire"
+      title="Analytique trafic"
+      subtitle="Ciment & BTP · tendance horaire"
       className="h-full"
     >
-      <Waveform />
-      <div className="mt-4 flex min-h-0 flex-1 items-end justify-between gap-2 border-t border-slate-800/60 pt-4">
-        {bars.length === 0 &&
-          Array.from({ length: 7 }).map((_, i) => (
-            <div
-              key={i}
-              className="w-full max-w-3 rounded-sm bg-slate-700/40"
-              style={{ height: `${30 + i * 8}%` }}
-            />
-          ))}
-        {bars.map((b) => (
-          <div key={b.label} className="flex flex-1 flex-col items-center gap-1.5">
-            <div
-              className={`w-full max-w-3 rounded-sm ${
-                b.alert ? "bg-red-500/70" : "bg-cyan-500/40"
-              }`}
-              style={{ height: `${Math.max(10, b.h)}%` }}
-            />
-            <span className="truncate text-[10px] text-slate-500">
-              {b.label}
-            </span>
-          </div>
-        ))}
-      </div>
+      <TrafficChart bars={bars} />
     </HudPanel>
   );
 }

@@ -15,9 +15,9 @@ export const LOGISTICS_NODES = [
 const LINKS = [[1, 2], [2, 3], [2, 4], [1, 3]];
 
 const NODE_COLORS = {
-  ok: { fill: "#34d399", stroke: "rgba(52,211,153,0.4)" },
-  warn: { fill: "#fbbf24", stroke: "rgba(251,191,36,0.35)" },
-  alert: { fill: "#ef4444", stroke: "rgba(239,68,68,0.5)" },
+  ok: { fill: "#2563eb", ring: "#93c5fd" },
+  warn: { fill: "#f59e0b", ring: "#fcd34d" },
+  alert: { fill: "#dc2626", ring: "#fca5a5" },
 };
 
 function nodeStatus(warehouseId, warehouses, dangerIds) {
@@ -51,7 +51,7 @@ export default function CameroonRadarMap({ warehouses = [], alerts = [] }) {
   const nodeById = Object.fromEntries(nodes.map((n) => [n.warehouseId, n]));
 
   return (
-    <div className="relative h-full w-full min-h-0">
+    <div className="relative h-full w-full min-h-0 rounded-xl bg-slate-50/80">
       <svg
         viewBox="0 0 200 260"
         className="relative z-10 h-full w-full"
@@ -59,8 +59,8 @@ export default function CameroonRadarMap({ warehouses = [], alerts = [] }) {
         aria-label="Cartographie radar Cameroun"
       >
         <defs>
-          <radialGradient id="radarGlow" cx="50%" cy="45%" r="50%">
-            <stop offset="0%" stopColor="rgba(34,211,238,0.06)" />
+          <radialGradient id="radarGlowLight" cx="50%" cy="45%" r="50%">
+            <stop offset="0%" stopColor="rgba(37,99,235,0.08)" />
             <stop offset="100%" stopColor="transparent" />
           </radialGradient>
         </defs>
@@ -72,26 +72,25 @@ export default function CameroonRadarMap({ warehouses = [], alerts = [] }) {
             cy="130"
             r={r}
             fill="none"
-            stroke="rgba(148,163,184,0.08)"
-            strokeWidth="0.5"
+            stroke="#e2e8f0"
+            strokeWidth="0.75"
           />
         ))}
 
-        <ellipse cx="100" cy="130" rx="130" ry="130" fill="url(#radarGlow)" />
+        <ellipse cx="100" cy="130" rx="130" ry="130" fill="url(#radarGlowLight)" />
 
         <path
           d={CAMEROON_PATH}
-          fill="rgba(148,163,184,0.03)"
-          stroke="rgba(148,163,184,0.2)"
-          strokeWidth="1"
+          fill="rgba(37,99,235,0.04)"
+          stroke="#94a3b8"
+          strokeWidth="1.2"
         />
 
         {LINKS.map(([a, b]) => {
           const na = nodeById[a];
           const nb = nodeById[b];
           if (!na || !nb) return null;
-          const critical =
-            na.status === "alert" || nb.status === "alert";
+          const critical = na.status === "alert" || nb.status === "alert";
           return (
             <line
               key={`${a}-${b}`}
@@ -99,12 +98,8 @@ export default function CameroonRadarMap({ warehouses = [], alerts = [] }) {
               y1={na.y}
               x2={nb.x}
               y2={nb.y}
-              stroke={
-                critical
-                  ? "rgba(239,68,68,0.35)"
-                  : "rgba(148,163,184,0.12)"
-              }
-              strokeWidth="1"
+              stroke={critical ? "#fecaca" : "#e2e8f0"}
+              strokeWidth="1.5"
             />
           );
         })}
@@ -118,24 +113,24 @@ export default function CameroonRadarMap({ warehouses = [], alerts = [] }) {
               <circle
                 cx={node.x}
                 cy={node.y}
-                r="5"
-                fill={colors.fill}
-                fillOpacity="0.2"
-                className={pulse}
+                r="7"
+                fill={colors.ring}
+                fillOpacity="0.35"
               />
               <circle
                 cx={node.x}
                 cy={node.y}
-                r="2.5"
+                r="4"
                 fill={colors.fill}
                 className={pulse}
               />
               <text
                 x={node.x}
-                y={node.y - 9}
+                y={node.y - 11}
                 textAnchor="middle"
-                fill="#94a3b8"
-                fontSize="7"
+                fill="#475569"
+                fontSize="8"
+                fontWeight="500"
                 fontFamily="var(--font-geist-sans, system-ui)"
               >
                 {node.name}
@@ -146,7 +141,7 @@ export default function CameroonRadarMap({ warehouses = [], alerts = [] }) {
       </svg>
 
       <div
-        className="pointer-events-none absolute left-1/2 top-1/2 z-0 aspect-square h-[88%] w-[88%] -translate-x-1/2 -translate-y-1/2 rounded-full hud-radar-sweep opacity-60"
+        className="pointer-events-none absolute left-1/2 top-1/2 z-0 aspect-square h-[88%] w-[88%] -translate-x-1/2 -translate-y-1/2 rounded-full hud-radar-sweep"
         aria-hidden
       />
     </div>
